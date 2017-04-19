@@ -5,20 +5,7 @@ using System.Collections;
 public class Draggable : MonoBehaviour {
 	Vector3 screenPoint;
 	Vector3 offset;
-	// Use this for initialization
-	void Start () {
-		Debug.Log ("Test");
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-	void Awake(){
-
-	
-	}
 	void OnMouseDown(){
 		Debug.Log ("OnMouseDown");
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
