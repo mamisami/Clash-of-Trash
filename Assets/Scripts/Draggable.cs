@@ -32,7 +32,10 @@ public class Draggable : MonoBehaviour {
 
 	void OnTriggerEnter (Collider hit) {
 		Debug.Log( "OnTriggerEnter" );
-		objectTrigerred = hit.gameObject;
+
+		// Test if it's trash
+		if(hit.gameObject.GetComponent<Trash>())
+			objectTrigerred = hit.gameObject;
 	}
 
 	void OnTriggerExit (Collider hit) {
