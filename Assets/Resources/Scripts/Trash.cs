@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class Trash : MonoBehaviour {
 	public string trashType = "waste";

@@ -1,16 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 
 
 // Draggable object, when collising with another object, destroy
-public class Draggable : MonoBehaviour {
+public class Draggable : NetworkBehaviour {
 	
 	Trash trash = null;
 
 	Vector3 screenPoint;
 	Vector3 offset;
+
+	[Command]
+	public void CmdAssignObjectAuthorityToClient(GameObject go)
+	{
+		go.GetComponentInChildren<NetworkIdentity>().AssignClientAuthority(this.GetComponentInChildren<NetworkIdentity>().connectionToClient);
+	}
+
+	[Command]
+	public void CmdRemoveObjectAuthorityToClient(GameObject go)
+	{
+		go.GetComponentInChildren<NetworkIdentity>().RemoveClientAuthority(this.GetComponentInChildren<NetworkIdentity>().connectionToClient);
+	}
 
 	void OnMouseDown(){
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
