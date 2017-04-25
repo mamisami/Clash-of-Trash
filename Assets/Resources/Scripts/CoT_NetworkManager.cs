@@ -25,12 +25,12 @@ public class CoT_NetworkManager : NetworkManager {
 		if (countPlayers < 2) 
 			countText.text = "Wait for one more player (" + countPlayers + ")";
 		else { 
-			this.maxConnections = -1;
+			this.maxConnections = -1; 
 			//countText.text = "";
 
 			Object timerPrefab = Resources.Load ("Prefabs/Timer", typeof(GameObject));
 			GameObject timerGameObject = Instantiate (timerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			TimerController timer = timerGameObject.GetComponent<TimerController> ();
+			//TimerController timer = timerGameObject.GetComponent<TimerController> ();
 			//NetworkServer.Spawn (timerGameObject);
 		}
 	}

@@ -13,17 +13,8 @@ public class Draggable : NetworkBehaviour {
 	Vector3 screenPoint;
 	Vector3 offset;
 
-	[Command]
-	public void CmdAssignObjectAuthorityToClient(GameObject go)
-	{
-		go.GetComponentInChildren<NetworkIdentity>().AssignClientAuthority(this.GetComponentInChildren<NetworkIdentity>().connectionToClient);
-	}
-
-	[Command]
-	public void CmdRemoveObjectAuthorityToClient(GameObject go)
-	{
-		go.GetComponentInChildren<NetworkIdentity>().RemoveClientAuthority(this.GetComponentInChildren<NetworkIdentity>().connectionToClient);
-	}
+	[SyncVar]
+	public string realName = "";
 
 	void OnMouseDown(){
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
@@ -33,6 +24,13 @@ public class Draggable : NetworkBehaviour {
 	void OnMouseDrag(){
 		Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 		Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
+
+		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+		foreach (GameObject player in players) {
+			PlayerController playerController = player.GetComponent<PlayerController>();
+			playerController.moveDraggable (this.realName, cursorPosition);
+		}
+
 		transform.position = cursorPosition;
 	}
 
