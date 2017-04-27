@@ -17,9 +17,6 @@ public class TimerController : NetworkBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		//if (!hasAuthority)
-		//x	return;
-		
 		timeLeft -= Time.deltaTime;
 		if (timeLeft < 0) {
 			timeLeft = 5.0f;
@@ -27,19 +24,12 @@ public class TimerController : NetworkBehaviour {
 			Object draggablePrefab = Resources.Load ("Prefabs/Draggable", typeof(GameObject));
 			Vector3 position = new Vector3 (Random.Range(-25.0f, -10.0f), Random.Range(23.0f, 17.0f));
 			GameObject draggableGameObject = Instantiate (draggablePrefab, position, draggableRotation) as GameObject;
+			Draggable draggable = draggableGameObject.GetComponent<Draggable> ();
 			string name = "Draggable_" + draggableID++;
 			draggableGameObject.name = name;
 			NetworkServer.Spawn (draggableGameObject);
-			draggableGameObject.GetComponent<Draggable> ().realName = name;
-			//RpcChangeGhostLayer (draggableGameObject, name);
+			draggable.GetComponent<Draggable> ().realName = name;
+			draggable.GetComponent<Draggable> ().isOnServer = true;
 		}
 	}
-
-	/*
-	[ClientRpc]
-	void RpcChangeGhostLayer(GameObject ghost, string name)
-	{
-		ghost.name = name;
-	}
-	*/
 }

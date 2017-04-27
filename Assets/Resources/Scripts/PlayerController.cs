@@ -24,12 +24,10 @@ public class PlayerController : NetworkBehaviour {
 
 	[Command]
 	void CmdMoveDraggable(string name, Vector3 position) {
-		Debug.Log ("1");
-		GameObject[] players = GameObject.FindGameObjectsWithTag("Draggable");
-		foreach (GameObject player in players) {
-			Draggable draggable = player.GetComponent<Draggable>();
+		GameObject[] draggables = GameObject.FindGameObjectsWithTag("Draggable");
+		foreach (GameObject draggableObject in draggables) {
+			Draggable draggable = draggableObject.GetComponent<Draggable>();
 			if (draggable.realName == name) {
-				Debug.Log ("2");
 				draggable.transform.position = position;
 				return;
 			}
