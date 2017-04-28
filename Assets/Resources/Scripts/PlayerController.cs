@@ -44,9 +44,8 @@ public class PlayerController : NetworkBehaviour {
 		txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
 	}
 
-	void destroyDraggable(string draggableName) {
-		GameObject draggable = GameObject.Find(draggableName);
-		Destroy (draggable);
+	void destroyDraggable(int draggableID) {
+		Destroy (timer.draggables[draggableID]);
 	}
 
 	/** Command functions **/
@@ -75,8 +74,8 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdUpdateScore(ClassificationType classificationResult, string draggableName) {
+	public void CmdUpdateScore(ClassificationType classificationResult, int draggableID) {
 		score += (int)classificationResult;
-		destroyDraggable (draggableName);
+		destroyDraggable (draggableID);
 	}
 }
