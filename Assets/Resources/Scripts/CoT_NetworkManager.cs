@@ -16,15 +16,23 @@ public class CoT_NetworkManager : NetworkManager {
 	public CameraController cameraController;
 	*/
 
+	//public List<UnityEngine.Networking.PlayerController> playerControllers = new List<UnityEngine.Networking.PlayerController> ();
+
 	public override void OnServerConnect(NetworkConnection conn)
 	{
 		base.OnServerConnect (conn);
 
 		countPlayers++;
 
-		if (countPlayers < 2) 
-			countText.text = "Wait for one more player (" + countPlayers + ")";
-		else { 
+		/*
+		Object playerPrefab = Resources.Load ("Prefabs/Player", typeof(GameObject));
+		GameObject playerGameObject = Instantiate (playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		NetworkServer.AddPlayerForConnection(conn, playerGameObject, 0);
+		*/
+
+		if (countPlayers < 2) {
+			//countText.text = "Wait for one more player (" + countPlayers + ")";
+		} else { 
 			this.maxConnections = -1; 
 			//countText.text = "";
 
@@ -36,7 +44,20 @@ public class CoT_NetworkManager : NetworkManager {
 	}
 
 	public override void OnServerDisconnect(NetworkConnection conn) {
+		Destroy (GameObject.FindWithTag ("Timer"));
+
+		this.maxConnections = 2; 
+
 		this.StopHost ();
 		countPlayers = 0;
+
+		base.OnServerDisconnect (conn);
 	}
+
+	/*
+	public override void OnServerAddPlayer (NetworkConnection conn, short playerControllerId) {
+		base.OnServerAddPlayer(conn, playerControllerId);
+		playerControllers.AddRange (conn.playerControllers);
+	}
+	*/
 }

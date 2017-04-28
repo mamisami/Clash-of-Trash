@@ -24,12 +24,10 @@ public class TimerController : NetworkBehaviour {
 			Object draggablePrefab = Resources.Load ("Prefabs/Draggable", typeof(GameObject));
 			Vector3 position = new Vector3 (Random.Range(-25.0f, -10.0f), Random.Range(23.0f, 17.0f));
 			GameObject draggableGameObject = Instantiate (draggablePrefab, position, draggableRotation) as GameObject;
-			Draggable draggable = draggableGameObject.GetComponent<Draggable> ();
-			string name = "Draggable_" + draggableID++;
-			draggableGameObject.name = name;
 			NetworkServer.Spawn (draggableGameObject);
-			draggable.GetComponent<Draggable> ().realName = name;
-			draggable.GetComponent<Draggable> ().isOnServer = true;
+
+			string name = "Draggable_" + draggableID++;
+			draggableGameObject.GetComponent<Draggable> ().realName = name;
 		}
 	}
 }

@@ -7,16 +7,30 @@ using UnityEngine.Networking;
 
 // Draggable object, when collising with another object, destroy
 public class Draggable : NetworkBehaviour {
-	
+
+	PlayerController player;
+
 	Trash trash = null;
 
 	Vector3 screenPoint;
 	Vector3 offset;
 
-	[SyncVar]
+	[SyncVar(hook="OnNameChange")]
 	public string realName = "";
 
-	public bool isOnServer = false;
+	// Use this for initialization
+	void Start () {
+		player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+	}
+
+	void OnDestroy() {
+		if (trash != null)
+			trash.Close();
+	}
+
+	private void OnNameChange(string value) {
+		this.name = value;
+	}
 
 	void OnMouseDown(){
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
@@ -27,22 +41,16 @@ public class Draggable : NetworkBehaviour {
 		Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 		Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
 
-		if (isOnServer) {
-			transform.position = cursorPosition;
-			return;
-		}
-
-		GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-		foreach (GameObject player in players) {
-			PlayerController playerController = player.GetComponent<PlayerController>();
-			playerController.moveDraggable (this.realName, cursorPosition);
-		}
+		move (cursorPosition);
 	}
 
 	void OnMouseUp(){
 		if (isObjectInTrash ()) {
 			trash.Close ();
-			Destroy (gameObject);
+
+			//TODO: Determiner si le release est le bon
+			release (ClassificationType.Good);
+			//Destroy (gameObject);
 		}
 	}
 
@@ -82,5 +90,18 @@ public class Draggable : NetworkBehaviour {
 	bool isObjectInTrash() {
 		return trash != null;
 	}
-}
 
+	/** MultiPlayer Functions **/
+	void move(Vector3 newPosition) {
+		if (hasAuthority) {
+			transform.position = newPosition;
+			return;
+		}
+
+		player.CmdMoveDraggable (this.name, newPosition);
+	}
+
+	void release(ClassificationType classificationType) {
+			player.CmdUpdateScore (classificationType, this.name);
+	}
+}
