@@ -7,6 +7,7 @@ public class TimerController : NetworkBehaviour {
 	float timeLeft = 5.0f;
 
 	int draggableID = 0;
+	public GameObject[] draggables = new GameObject[Constant.MAX_DRAGGABLES];
 
 	Quaternion draggableRotation = Quaternion.Euler(-90, 0,0);
 
@@ -26,8 +27,9 @@ public class TimerController : NetworkBehaviour {
 			GameObject draggableGameObject = Instantiate (draggablePrefab, position, draggableRotation) as GameObject;
 			NetworkServer.Spawn (draggableGameObject);
 
-			string name = "Draggable_" + draggableID++;
-			draggableGameObject.GetComponent<Draggable> ().realName = name;
+			int currentDraggableID = draggableID++;
+			draggables [currentDraggableID] = draggableGameObject;
+			draggableGameObject.GetComponent<Draggable> ().realName = currentDraggableID.ToString();
 		}
 	}
 }

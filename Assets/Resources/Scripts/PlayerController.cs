@@ -9,12 +9,15 @@ public class PlayerController : NetworkBehaviour {
 	public int score = 0;
 
 	Text txtScore;
-	CoT_NetworkManager networkManager;
+	TimerController timer;
 
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
-		networkManager = GameObject.FindWithTag ("NetworkManager").GetComponent<CoT_NetworkManager> ();
+
+		GameObject timerObject = GameObject.FindWithTag ("Timer");
+		if (timerObject != null)
+			timer = timerObject.GetComponent<TimerController> ();
 	}
 
 	override public void OnStartLocalPlayer() {
@@ -62,11 +65,13 @@ public class PlayerController : NetworkBehaviour {
 	*/
 
 	[Command]
-	public void CmdMoveDraggable(string name, Vector3 position) {
+	public void CmdMoveDraggable(int id, Vector3 newPosition) {
 		//GameObject draggable = FindDraggableWithRealName (name);
-		GameObject draggable = GameObject.Find(name);
-		if (draggable != null)
-			draggable.transform.position = position;
+		//GameObject draggable = GameObject.Find(name);
+		//if (draggable != null)
+			//draggable.transform.position = position;
+
+		timer.draggables[id].transform.position = newPosition;
 	}
 
 	[Command]

@@ -93,12 +93,12 @@ public class Draggable : NetworkBehaviour {
 
 	/** MultiPlayer Functions **/
 	void move(Vector3 newPosition) {
-		if (hasAuthority) {
+		if (isServer) {
 			transform.position = newPosition;
 			return;
 		}
 
-		player.CmdMoveDraggable (this.name, newPosition);
+		player.CmdMoveDraggable (int.Parse(this.name), newPosition);
 	}
 
 	void release(ClassificationType classificationType) {
