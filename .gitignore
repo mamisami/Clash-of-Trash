@@ -33,3 +33,4 @@ sysinfo.txt
 *.x86_64
 *.exe
 *.app
+*.dll
