@@ -30,7 +30,7 @@ public class CoT_NetworkManager : NetworkManager {
 		NetworkServer.AddPlayerForConnection(conn, playerGameObject, 0);
 		*/
 
-		if (countPlayers < 2) {
+		if (countPlayers < 2 && !Constant.IS_SINGLE_PLAYER) {
 			//countText.text = "Wait for one more player (" + countPlayers + ")";
 		} else { 
 			this.maxConnections = -1; 

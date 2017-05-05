@@ -31,13 +31,18 @@ public class PlayerController : NetworkBehaviour {
 
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
-			adversaryScore = GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().score;
+			if (!Constant.IS_SINGLE_PLAYER)
+				adversaryScore = GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().score;
 		} else {
 			localPlayerScore = GameObject.FindWithTag ("LocalPlayer").GetComponent<PlayerController> ().score;
-			adversaryScore = value;
+			if (!Constant.IS_SINGLE_PLAYER)
+				adversaryScore = value;
 		}
 
-		txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
+		if (Constant.IS_SINGLE_PLAYER)
+			txtScore.text = "Your score : " + localPlayerScore + "pts";
+		else
+			txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
 	}
 
 	void destroyDraggable(int draggableID) {
