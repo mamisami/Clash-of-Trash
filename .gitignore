@@ -30,3 +30,6 @@ sysinfo.txt
 *.unitypackage
 
 \.DS_Store
+*.x86_64
+*.exe
+*.app
