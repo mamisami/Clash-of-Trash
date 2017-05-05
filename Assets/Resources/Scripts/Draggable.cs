@@ -50,6 +50,7 @@ public class Draggable : NetworkBehaviour {
 
 			//TODO: Determiner si le release est le bon
 			release (ClassificationType.Good);
+			this.trash.MakeParticleEffect ();
 			//Destroy (gameObject);
 		}
 	}
@@ -70,7 +71,7 @@ public class Draggable : NetworkBehaviour {
 		Trash hitTrash = hit.gameObject.GetComponent<Trash> ();
 
 		// If no other trash, it's the current trash
-		if (trash == null) {
+		if (hitTrash != null && trash == null) {
 			hitTrash.Open ();
 			trash = hitTrash;
 		}

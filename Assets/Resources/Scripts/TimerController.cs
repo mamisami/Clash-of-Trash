@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class TimerController : NetworkBehaviour {
-	float timeLeft = 5.0f;
+	float timeLeft = 1.0f;
 
 	int draggableID = 0;
 	public GameObject[] draggables = new GameObject[Constant.MAX_DRAGGABLES];
@@ -19,8 +19,8 @@ public class TimerController : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 		timeLeft -= Time.deltaTime;
-		if (timeLeft < 0) {
-			timeLeft = 5.0f;
+		if (timeLeft <= 0) {
+			timeLeft = 2.0f;
 
 			Object draggablePrefab = Resources.Load ("Prefabs/Draggable", typeof(GameObject));
 			Vector3 position = new Vector3 (Random.Range(-25.0f, -10.0f), Random.Range(23.0f, 17.0f));
