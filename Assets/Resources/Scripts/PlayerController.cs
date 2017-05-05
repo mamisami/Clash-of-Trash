@@ -14,10 +14,6 @@ public class PlayerController : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
-
-		GameObject timerObject = GameObject.FindWithTag ("Timer");
-		if (timerObject != null)
-			timer = timerObject.GetComponent<TimerController> ();
 	}
 
 	override public void OnStartLocalPlayer() {
@@ -45,6 +41,12 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	void destroyDraggable(int draggableID) {
+		if (timer == null) {
+			GameObject timerObject = GameObject.FindWithTag ("Timer");
+			if (timerObject != null)
+				timer = timerObject.GetComponent<TimerController> ();
+		}
+		
 		Destroy (timer.draggables[draggableID]);
 	}
 
