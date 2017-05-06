@@ -51,6 +51,8 @@ public class Draggable : NetworkBehaviour {
 			//TODO: Determiner si le release est le bon
 			release (ClassificationType.Good);
 			this.trash.MakeParticleEffect ();
+			this.trash.MakePopScoreGood (10); // Or MakePopScoreBad(score)
+
 			//Destroy (gameObject);
 		}
 	}

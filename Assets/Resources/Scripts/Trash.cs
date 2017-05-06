@@ -41,7 +41,6 @@ public class Trash : MonoBehaviour {
 			GameObject particleClone = Instantiate (particleEffect, posParticle, Quaternion.Euler(new Vector3(-90, 0, 0))) as GameObject;
 			Destroy (particleClone, 2);
 		}
-		MakePopScoreBad (10);
 	}
 
 	public void MakePopText(string text, Color color){
