@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class Trash : MonoBehaviour {
 	public string trashType = "waste";
+	public Color colorGoodText = Color.green;
+	public Color colorBadText = Color.red;
+
 
 	Sprite spriteTrashClose;
 	Sprite spriteTrashOpen;
@@ -38,18 +41,27 @@ public class Trash : MonoBehaviour {
 			GameObject particleClone = Instantiate (particleEffect, posParticle, Quaternion.Euler(new Vector3(-90, 0, 0))) as GameObject;
 			Destroy (particleClone, 2);
 		}
-		MakePopText ();
+		MakePopScoreBad (10);
 	}
 
-	public void MakePopText(){
+	public void MakePopText(string text, Color color){
 		Vector3 posText = transform.position;
 		GameObject bonusClone = Instantiate (bonusText, posText, Quaternion.identity) as GameObject;
 		Destroy (bonusClone, 3f); // Destoy 3 seconds after
 		TextMesh txtMesh = bonusClone.GetComponentInChildren<TextMesh> ();
 		txtMesh.alignment = TextAlignment.Center;
-		txtMesh.text = "+1";
+		txtMesh.text = text;
+		txtMesh.color = color;
 		posText.y += 1f;
 		//posText.z += 1;
 		bonusClone.transform.position = posText;
+	}
+
+	public void MakePopScoreGood(int score){
+		MakePopText("+"+score, colorGoodText);
+	}
+
+	public void MakePopScoreBad(int score){
+		MakePopText("-"+score, colorBadText);
 	}
 }
