@@ -21,6 +21,9 @@ public class Draggable : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+
+		gameObject.transform.localScale = new Vector3 (0f, 0f, 0f);
+		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",1f,"easetype", iTween.EaseType.easeOutElastic));
 	}
 
 	void OnDestroy() {
