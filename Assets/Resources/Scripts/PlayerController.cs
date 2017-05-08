@@ -29,6 +29,9 @@ public class PlayerController : NetworkBehaviour {
 		int localPlayerScore;
 		int adversaryScore;
 
+		if (NetworkManager.singleton.IsClientConnected ())
+			score = value;
+
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
 			if (!Constant.IS_SINGLE_PLAYER)
