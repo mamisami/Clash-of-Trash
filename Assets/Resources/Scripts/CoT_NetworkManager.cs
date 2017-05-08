@@ -6,6 +6,8 @@ using UnityEngine.Networking;
 using UnityEngine.Assertions;
 
 public class CoT_NetworkManager : NetworkManager {
+	public NetworkDiscovery discovery;
+
 	private int countPlayers = 0;
 	//public GameObject playerPrefab;
 
@@ -34,10 +36,11 @@ public class CoT_NetworkManager : NetworkManager {
 			//countText.text = "Wait for one more player (" + countPlayers + ")";
 		} else { 
 			this.maxConnections = -1; 
+			discovery.StopBroadcast ();
 			//countText.text = "";
 
 			Object timerPrefab = Resources.Load ("Prefabs/Timer", typeof(GameObject));
-			GameObject timerGameObject = Instantiate (timerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			Instantiate (timerPrefab, Vector3.zero, Quaternion.identity);
 			//TimerController timer = timerGameObject.GetComponent<TimerController> ();
 			//NetworkServer.Spawn (timerGameObject);
 		}
@@ -52,6 +55,19 @@ public class CoT_NetworkManager : NetworkManager {
 		countPlayers = 0;
 
 		base.OnServerDisconnect (conn);
+	}
+
+	public override void OnStartHost()
+	{
+		if (!Constant.IS_SINGLE_PLAYER) {
+			discovery.Initialize ();
+			discovery.StartAsServer ();
+		}
+	}
+
+	public override void OnStopClient()
+	{
+		//discovery.StopBroadcast();
 	}
 
 	/*

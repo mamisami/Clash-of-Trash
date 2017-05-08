@@ -2,7 +2,7 @@
 
 	public static class Constant
 	{
-		public const bool IS_SINGLE_PLAYER = true;
+		public const bool IS_SINGLE_PLAYER = false;
 
 		public const int MAX_DRAGGABLES = 100;
 

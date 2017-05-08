@@ -77,6 +77,12 @@ public class PlayerController : NetworkBehaviour {
 		//if (draggable != null)
 			//draggable.transform.position = position;
 
+		if (timer == null) {
+			GameObject timerObject = GameObject.FindWithTag ("Timer");
+			if (timerObject != null)
+				timer = timerObject.GetComponent<TimerController> ();
+		}
+
 		timer.draggables[id].transform.position = newPosition;
 	}
 
