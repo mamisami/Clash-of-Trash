@@ -14,7 +14,10 @@ public class Trash : MonoBehaviour {
 	GameObject particleEffect;
 	GameObject bonusText;
 
+	SpriteRenderer spriteRenderer;
+
 	void Awake(){
+		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteTrashClose = Resources.Load<Sprite> 
 			("Sprites/Trash/"+trashType+"/"+trashType+"_close");
 		spriteTrashOpen = Resources.Load<Sprite> 
@@ -26,11 +29,11 @@ public class Trash : MonoBehaviour {
 	}
 
 	public void Open(){
-		GetComponent<SpriteRenderer> ().sprite = spriteTrashOpen;
+		spriteRenderer.sprite = spriteTrashOpen;
 	}
 
 	public void Close(){
-		GetComponent<SpriteRenderer> ().sprite = spriteTrashClose;
+		spriteRenderer.sprite = spriteTrashClose;
 	}
 
 	public void MakeParticleEffect(){
@@ -41,6 +44,12 @@ public class Trash : MonoBehaviour {
 			GameObject particleClone = Instantiate (particleEffect, posParticle, Quaternion.Euler(new Vector3(-90, 0, 0))) as GameObject;
 			Destroy (particleClone, 2);
 		}
+
+		// Make rotation effect
+		Quaternion v = gameObject.transform.rotation;
+		v.z = -0.1f;
+		transform.rotation = v;
+		iTween.RotateTo(gameObject, iTween.Hash("z",0f,"time",1f,"easetype", iTween.EaseType.easeOutElastic));
 	}
 
 	public void MakePopText(string text, Color color){
