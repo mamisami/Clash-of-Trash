@@ -12,7 +12,8 @@ public class TruckBar : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		iTween.MoveTo(gameObject,new Vector3(12.5f,-56,90),60);
+		//iTween.MoveTo(gameObject,new Vector3(12.5f,-56,90),60);
+		iTween.MoveTo(gameObject,  iTween.Hash("x", 12.5f,"time",2,"easetype", iTween.EaseType.linear/*,"onComplete","SideLeft"*/));
 	}
 		
 }
