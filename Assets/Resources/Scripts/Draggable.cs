@@ -35,6 +35,9 @@ public class Draggable : NetworkBehaviour {
 	void OnMouseDown(){
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 		offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+
+		// Anim to grow up
+		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1.2f,1.2f,1.2f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
 	}
 
 	void OnMouseDrag(){
@@ -45,6 +48,9 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	void OnMouseUp(){
+		// Anim to grow down
+		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
+
 		if (isObjectInTrash ()) {
 			trash.Close ();
 
