@@ -29,6 +29,9 @@ public class PlayerController : NetworkBehaviour {
 		int localPlayerScore;
 		int adversaryScore;
 
+		if (NetworkManager.singleton.IsClientConnected ())
+			score = value;
+
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
 			if (!Constant.IS_SINGLE_PLAYER)
@@ -76,6 +79,12 @@ public class PlayerController : NetworkBehaviour {
 		//GameObject draggable = GameObject.Find(name);
 		//if (draggable != null)
 			//draggable.transform.position = position;
+
+		if (timer == null) {
+			GameObject timerObject = GameObject.FindWithTag ("Timer");
+			if (timerObject != null)
+				timer = timerObject.GetComponent<TimerController> ();
+		}
 
 		timer.draggables[id].transform.position = newPosition;
 	}
