@@ -1,3 +1,3 @@
 ﻿using System;
 
-public enum ClassificationType {Good=Constant.GOOD_CLASSIFICATION_SCORE, False=Constant.FALSE_CLASSIFICATION_SCORE} 
+public enum ClassificationType {Good=Global.GOOD_CLASSIFICATION_SCORE, False=Global.FALSE_CLASSIFICATION_SCORE} 

@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class ButtonMenu : MonoBehaviour {
     public Image imgLvl;
     public Text txtLvl;
+
+	private int selectedLevel = 1;
+
     // Use this for initialization
     void Start () {
 		
@@ -17,14 +20,27 @@ public class ButtonMenu : MonoBehaviour {
 		
     }
 
-    public void LoadScene(string sceneName)
-    {
+	public void LoadMenu()
+	{
+		SceneManager.LoadScene("Menu");
+	}
 
-        SceneManager.LoadScene(sceneName);
-    }
+	public void LoadLevel(bool isSinglePlayer)
+	{
+		Global.isSinglePlayer = isSinglePlayer;
+		SceneManager.LoadScene("Level");
+	}
+
+	public void LoadGame()
+	{
+		Global.level = selectedLevel;
+		SceneManager.LoadScene("StartScene");
+	}
 
     public void ChangeLevel(int numLevel)
     {
+		selectedLevel = numLevel;
+
         imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+numLevel);
         txtLvl.text = "Level " + numLevel;
     }

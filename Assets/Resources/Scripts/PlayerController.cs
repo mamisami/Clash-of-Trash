@@ -27,22 +27,22 @@ public class PlayerController : NetworkBehaviour {
 
 	void OnScoreChange(int value) {
 		int localPlayerScore;
-		int adversaryScore;
+		int adversaryScore = 0;;
 
 		if (NetworkManager.singleton.IsClientConnected ())
 			score = value;
 
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
-			if (!Constant.IS_SINGLE_PLAYER)
+			if (!Global.isSinglePlayer)
 				adversaryScore = GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().score;
 		} else {
 			localPlayerScore = GameObject.FindWithTag ("LocalPlayer").GetComponent<PlayerController> ().score;
-			if (!Constant.IS_SINGLE_PLAYER)
+			if (!Global.isSinglePlayer)
 				adversaryScore = value;
 		}
 
-		if (Constant.IS_SINGLE_PLAYER)
+		if (Global.isSinglePlayer)
 			txtScore.text = "Your score : " + localPlayerScore + "pts";
 		else
 			txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";

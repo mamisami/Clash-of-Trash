@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using UnityEngine.Assertions;
 
@@ -32,7 +33,7 @@ public class CoT_NetworkManager : NetworkManager {
 		NetworkServer.AddPlayerForConnection(conn, playerGameObject, 0);
 		*/
 
-		if (countPlayers < 2 && !Constant.IS_SINGLE_PLAYER) {
+		if (countPlayers < 2 && !Global.isSinglePlayer) {
 			//countText.text = "Wait for one more player (" + countPlayers + ")";
 		} else { 
 			this.maxConnections = -1; 
@@ -46,28 +47,37 @@ public class CoT_NetworkManager : NetworkManager {
 		}
 	}
 
-	public override void OnServerDisconnect(NetworkConnection conn) {
-		Destroy (GameObject.FindWithTag ("Timer"));
-
-		this.maxConnections = 2; 
-
-		this.StopHost ();
-		countPlayers = 0;
-
-		base.OnServerDisconnect (conn);
-	}
-
 	public override void OnStartHost()
 	{
-		if (!Constant.IS_SINGLE_PLAYER) {
+		if (!Global.isSinglePlayer) {
 			discovery.Initialize ();
 			discovery.StartAsServer ();
 		}
 	}
 
-	public override void OnStopClient()
-	{
-		//discovery.StopBroadcast();
+	public override void OnStopClient() {
+		clearGame ();
+	}
+
+	public override void OnStopHost() {
+		clearGame ();
+	}
+
+	public override void OnStopServer() {
+		clearGame ();
+	}
+
+	private void clearGame() {
+		GameObject timer = GameObject.FindWithTag ("Timer");
+		if (timer)
+			Destroy (timer);
+
+		this.maxConnections = 2; 
+
+		//this.StopHost ();
+		countPlayers = 0;
+
+		SceneManager.LoadScene("Menu");
 	}
 
 	/*

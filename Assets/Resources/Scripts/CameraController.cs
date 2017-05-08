@@ -8,11 +8,13 @@ public class CameraController : MonoBehaviour {
 	public NetworkManager manager;
 
 	float timerMultiplayer = 5.0f;
-	bool timerEnabled = !Constant.IS_SINGLE_PLAYER;
+	bool timerEnabled = !Global.isSinglePlayer;
 
 	// Use this for initialization
 	void Start () {
-		if (!Constant.IS_SINGLE_PLAYER) {
+		if (Global.isSinglePlayer) {
+			NetworkManager.singleton.StartHost ();
+		} else {
 			discovery.Initialize();
 			discovery.StartAsClient();
 		}
