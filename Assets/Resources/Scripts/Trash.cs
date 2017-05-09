@@ -7,7 +7,7 @@ public class Trash : MonoBehaviour {
 	public string trashType = "waste";
 	public Color colorGoodText = Color.green;
 	public Color colorBadText = Color.red;
-
+	public bool draggable = true;
 
 	Sprite spriteTrashClose;
 	Sprite spriteTrashOpen;
@@ -15,6 +15,12 @@ public class Trash : MonoBehaviour {
 	GameObject bonusText;
 
 	SpriteRenderer spriteRenderer;
+
+	Vector3 screenPointDrag;
+	Vector3 offsetDrag;
+
+	float startScale = 1f;
+	bool moving = false;
 
 	void Awake(){
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -26,10 +32,14 @@ public class Trash : MonoBehaviour {
 			("Trash/ParticleSystemTrash");
 		bonusText = Resources.Load<GameObject>
 			("Trash/PopText3D");
+		startScale = transform.localScale.x;
+		Debug.Log (Global.level);
+		draggable = Global.level == 2;
 	}
 
 	public void Open(){
-		spriteRenderer.sprite = spriteTrashOpen;
+		if(!moving)
+			spriteRenderer.sprite = spriteTrashOpen;
 	}
 
 	public void Close(){
@@ -71,5 +81,40 @@ public class Trash : MonoBehaviour {
 
 	public void MakePopScoreBad(int score){
 		MakePopText("-"+score, colorBadText);
+	}
+
+	void OnMouseDown(){
+		if (draggable) {
+			Debug.Log ("XO1");
+			screenPointDrag = Camera.main.WorldToScreenPoint (gameObject.transform.position);
+			offsetDrag = gameObject.transform.position - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPointDrag.z));
+
+			// Anim to grow up
+			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale + 0.2f, startScale + 0.2f, startScale + 0.2f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+		
+			moving = true;
+		}
+	}
+
+	void OnMouseDrag(){
+		if (draggable) {
+			Vector3 cursorPoint = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPointDrag.z);
+			Vector3 cursorPosition = Camera.main.ScreenToWorldPoint (cursorPoint) + offsetDrag;
+
+			transform.position = cursorPosition;
+		}
+	}
+
+	void OnMouseUp(){
+		if (draggable) {
+			// Anim to grow down
+			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+
+			moving = false;
+		}
+	}
+
+	public bool IsMoving(){
+		return moving;
 	}
 }

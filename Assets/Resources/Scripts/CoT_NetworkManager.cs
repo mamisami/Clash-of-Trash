@@ -37,7 +37,8 @@ public class CoT_NetworkManager : NetworkManager {
 			//countText.text = "Wait for one more player (" + countPlayers + ")";
 		} else { 
 			this.maxConnections = -1; 
-			discovery.StopBroadcast ();
+			if(!Constant.IS_SINGLE_PLAYER)
+				discovery.StopBroadcast ();
 			//countText.text = "";
 
 			Object timerPrefab = Resources.Load ("Prefabs/Timer", typeof(GameObject));
