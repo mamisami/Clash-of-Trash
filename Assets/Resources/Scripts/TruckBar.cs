@@ -15,6 +15,12 @@ public class TruckBar : MonoBehaviour {
 	Vector3 emptyTrash2Position;
 	Vector3 emptyTrashScale;
 
+	GameObject currentTrash1;
+	GameObject currentTrash2;
+
+
+	int indexTrash = 1;
+
 	// Use this for initialization
 	void Start () {
 		truck = transform.Find ("Truck").gameObject;
@@ -46,17 +52,32 @@ public class TruckBar : MonoBehaviour {
 		iTween.FadeTo(gameObject,  iTween.Hash("alpha", 1f,"time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 	}
 
-	public void PlaceTrash(GameObject trash, int num = 1){
+	// 0 : auto
+	public void PlaceTrash(GameObject trash, int num = 0){
+		indexTrash += 1;
+		if (num == 0)
+			num = indexTrash % 2 + 1;
+		
 		GameObject emptyTrash = emptyTrash1;
 		Vector3 pos = emptyTrash1Position;
 
 		if (num == 2) {
 			emptyTrash = emptyTrash2;
 			pos = emptyTrash2Position;
+
+			// Update current trash 1
+			if (currentTrash2 && currentTrash2 != trash/* Not the same */)
+				currentTrash2.GetComponent<Trash>().ReplaceTrash ();
+			currentTrash2 = trash;
+		} else {
+
+			// Update current trash 2
+			if (currentTrash1 && currentTrash1 != trash)
+				currentTrash1.GetComponent<Trash>().ReplaceTrash ();
+			currentTrash1 = trash;
 		}
 
-		trash.transform.position = pos;
-		//iTween.MoveTo(trash,  iTween.Hash("position", emptyTrash.transform.position,"time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 		iTween.ScaleTo(trash,  iTween.Hash("scale", emptyTrashScale, "time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
+		iTween.MoveTo(trash,  iTween.Hash("position", pos, "time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 	}		
 }

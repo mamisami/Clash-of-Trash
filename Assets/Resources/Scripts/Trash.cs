@@ -104,13 +104,14 @@ public class Trash : MonoBehaviour {
 			offsetDrag = gameObject.transform.position - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPointDrag.z));
 
 			// Anim to grow up
-			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale + 0.2f, startScale + 0.2f, startScale + 0.2f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
-		
+			GrowUp();
+
 			moving = true;
 
 			// Anim empty trash
 			ShowEmptyTrash();
 		}
+
 	}
 
 	void OnMouseDrag(){
@@ -125,15 +126,14 @@ public class Trash : MonoBehaviour {
 	void OnMouseUp(){
 		if (draggable) {
 			// Anim to grow down
-			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+			GrowDown();
 
 			moving = false;
-
 			if (truckbar) {
 				isInTruckBar = true;
-				truckbar.PlaceTrash (this.gameObject, 2);
+				truckbar.PlaceTrash (this.gameObject);
 				truckbar.Close ();
-			} else {
+			} else{
 				ReplaceTrash ();
 			}
 		}
@@ -141,10 +141,21 @@ public class Trash : MonoBehaviour {
 
 	public void ReplaceTrash(){
 		isInTruckBar = false;
+		GrowDown();
 		iTween.MoveTo (gameObject, iTween.Hash ("position", trashEmptyClone.transform.position, "time", 0.3f, "easetype", iTween.EaseType.easeOutBack));
 
 		// Animate empty trash
 		HideEmptyTrash();
+	}
+
+	public void GrowDown(){
+		// Anim to grow down
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+	}
+
+	public void GrowUp(){
+		// Anim to grow up
+		iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale + 0.2f, startScale + 0.2f, startScale + 0.2f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 	}
 
 	void ShowEmptyTrash(){
