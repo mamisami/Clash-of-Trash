@@ -13,6 +13,7 @@ public class Trash : MonoBehaviour {
 	Sprite spriteTrashOpen;
 	GameObject particleEffect;
 	GameObject bonusText;
+	GameObject trashEmpty;
 
 	SpriteRenderer spriteRenderer;
 
@@ -21,6 +22,8 @@ public class Trash : MonoBehaviour {
 
 	float startScale = 1f;
 	bool moving = false;
+	GameObject trashEmptyClone;
+
 
 	void Awake(){
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -32,9 +35,18 @@ public class Trash : MonoBehaviour {
 			("Trash/ParticleSystemTrash");
 		bonusText = Resources.Load<GameObject>
 			("Trash/PopText3D");
+		trashEmpty = Resources.Load<GameObject>
+			("Trash/TrashEmpty");
 		startScale = transform.localScale.x;
-		Debug.Log (Global.level);
+
 		draggable = Global.level == 2;
+
+		trashEmptyClone = Instantiate (trashEmpty, transform.position, transform.rotation) as GameObject;
+		trashEmptyClone.transform.localScale = transform.localScale;
+		//trashEmptyClone.GetComponent<Renderer>().enabled = false;
+		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.2f,"easetype", iTween.EaseType.linear));
+		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale*0.5f, startScale*0.5f, startScale*0.5f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+
 	}
 
 	public void Open(){
@@ -85,7 +97,6 @@ public class Trash : MonoBehaviour {
 
 	void OnMouseDown(){
 		if (draggable) {
-			Debug.Log ("XO1");
 			screenPointDrag = Camera.main.WorldToScreenPoint (gameObject.transform.position);
 			offsetDrag = gameObject.transform.position - Camera.main.ScreenToWorldPoint (new Vector3 (Input.mousePosition.x, Input.mousePosition.y, screenPointDrag.z));
 
@@ -93,6 +104,10 @@ public class Trash : MonoBehaviour {
 			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale + 0.2f, startScale + 0.2f, startScale + 0.2f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 		
 			moving = true;
+
+			// Anim empty trash
+			iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 1, "time",0.3f,"easetype", iTween.EaseType.linear));
+			iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 		}
 	}
 
@@ -111,6 +126,10 @@ public class Trash : MonoBehaviour {
 			iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 
 			moving = false;
+
+			// Animate empty trash
+			iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.3f,"easetype", iTween.EaseType.linear));
+			iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(0.1f, 0.1f, 0.1f), "time", 0.3f, "easetype", iTween.EaseType.easeOutBack));
 		}
 	}
 
