@@ -24,6 +24,9 @@ public class Trash : MonoBehaviour {
 	bool moving = false;
 	GameObject trashEmptyClone;
 
+	TruckBar truckbar;
+
+	bool isInTruckBar = false;
 
 	void Awake(){
 		spriteRenderer = GetComponent<SpriteRenderer> ();
@@ -106,8 +109,7 @@ public class Trash : MonoBehaviour {
 			moving = true;
 
 			// Anim empty trash
-			iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 1, "time",0.3f,"easetype", iTween.EaseType.linear));
-			iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+			ShowEmptyTrash();
 		}
 	}
 
@@ -127,13 +129,57 @@ public class Trash : MonoBehaviour {
 
 			moving = false;
 
-			// Animate empty trash
-			iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.3f,"easetype", iTween.EaseType.linear));
-			iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(0.1f, 0.1f, 0.1f), "time", 0.3f, "easetype", iTween.EaseType.easeOutBack));
+			if (truckbar) {
+				isInTruckBar = true;
+				truckbar.PlaceTrash (this.gameObject, 2);
+				truckbar.Close ();
+			} else {
+				ReplaceTrash ();
+			}
 		}
 	}
 
+	public void ReplaceTrash(){
+		isInTruckBar = false;
+		iTween.MoveTo (gameObject, iTween.Hash ("position", trashEmptyClone.transform.position, "time", 0.3f, "easetype", iTween.EaseType.easeOutBack));
+
+		// Animate empty trash
+		HideEmptyTrash();
+	}
+
+	void ShowEmptyTrash(){
+		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 1, "time",0.3f,"easetype", iTween.EaseType.linear));
+		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
+	}
+
+	void HideEmptyTrash(){
+		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.3f,"easetype", iTween.EaseType.linear));
+		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(0.1f, 0.1f, 0.1f), "time", 0.3f, "easetype", iTween.EaseType.easeInOutBack));
+	}
+
+	void OnTriggerEnter (Collider col)
+	{
+		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
+		if (truckbar && !this.truckbar) {
+			this.truckbar = truckbar;
+			this.truckbar.Open ();
+		}
+	}
+
+	void OnTriggerExit (Collider col)
+	{
+		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
+		if (truckbar && this.truckbar) {
+			this.truckbar.Close ();
+			this.truckbar = null;
+		}
+	}
+		
 	public bool IsMoving(){
 		return moving;
+	}
+
+	public bool IsInTruckBar(){
+		return isInTruckBar;
 	}
 }

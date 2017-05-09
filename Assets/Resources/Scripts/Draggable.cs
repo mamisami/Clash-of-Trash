@@ -54,7 +54,7 @@ public class Draggable : NetworkBehaviour {
 		// Anim to grow down
 		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
 
-		if (isObjectInTrash ()) {
+		if (isObjectInTrash () && !trash.IsInTruckBar()) {
 			trash.Close ();
 
 			//TODO: Determiner si le release est le bon
@@ -69,7 +69,7 @@ public class Draggable : NetworkBehaviour {
 	void OnTriggerEnter (Collider hit) {
 		Trash hitTrash = hit.gameObject.GetComponent<Trash> ();
 
-		if (hitTrash) {
+		if (hitTrash && !hitTrash.IsInTruckBar()) {
 			// Already a trash, close it
 			if(trash)
 				trash.Close ();
@@ -82,7 +82,7 @@ public class Draggable : NetworkBehaviour {
 		Trash hitTrash = hit.gameObject.GetComponent<Trash> ();
 
 		// If no other trash, it's the current trash
-		if (hitTrash != null && trash == null) {
+		if (hitTrash != null && trash == null  && !hitTrash.IsInTruckBar()) {
 			hitTrash.Open ();
 			trash = hitTrash;
 		}
@@ -91,7 +91,7 @@ public class Draggable : NetworkBehaviour {
 	void OnTriggerExit (Collider hit) {
 		Trash trashExit = hit.gameObject.GetComponent<Trash> ();
 
-		if (trashExit) {
+		if (trashExit && !trashExit.IsInTruckBar()) {
 			trashExit.Close ();
 
 			if (trashExit == trash)
