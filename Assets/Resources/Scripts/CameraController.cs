@@ -15,7 +15,7 @@ public class CameraController : MonoBehaviour {
 		if (Global.isSinglePlayer) {
 			NetworkManager.singleton.StartHost ();
 		} else {
-			discovery.broadcastSubVersion = Global.level;
+			discovery.broadcastKey = discovery.broadcastKey + Global.level;
 			discovery.Initialize();
 			discovery.StartAsClient();
 		}
