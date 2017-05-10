@@ -20,9 +20,12 @@ public class TruckBar : MonoBehaviour {
 
 	int indexTrash = 1;
 
+	float timeFactoryToTrash = Global.TRUCK_BAR_TIME_TO_FACTORY;
+
 	// Use this for initialization
 	void Start () {
 		truck = transform.Find ("Truck").gameObject;
+		positionX = truck.transform.position.x;
 
 		// Empty trashes
 		emptyTrash1 = transform.Find ("trash_empty1").gameObject;
@@ -31,12 +34,54 @@ public class TruckBar : MonoBehaviour {
 		emptyTrash2Position = emptyTrash2.transform.position;
 		emptyTrashScale = emptyTrash1.transform.lossyScale;
 
-		positionX = truck.transform.position.x;
+		// Init pos truck
+		Vector3 pos = truck.transform.position;
+		//pos.x += 1.2f;
+		truck.transform.position = pos;
+		Quaternion rot = truck.transform.rotation;
+		rot.y = 180f;
+		truck.transform.rotation = rot;
+
+		MoveTruckToFactory ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		iTween.MoveTo(truck,  iTween.Hash("x", positionX+1.6f,"time",2,"easetype", iTween.EaseType.linear));
+
+	void MoveTruckToTrash(){
+		iTween.MoveTo(truck,  iTween.Hash("x", positionX,"time",timeFactoryToTrash,"easetype", iTween.EaseType.linear,
+			"oncompletetarget" , this.gameObject,
+			"oncomplete", "TruckMovedToTrash"));
+		iTween.RotateTo(truck,  iTween.Hash("y", 0f,"time",1f,"easetype", iTween.EaseType.linear));
+
+	}
+
+	void TruckMovedToTrash(){
+		// Empty 
+		EmptyTrash (currentTrash1 );
+		EmptyTrash (currentTrash2, false );
+		currentTrash1 = null;
+		currentTrash2 = null;
+
+		this.MoveTruckToFactory ();
+	}
+
+	void EmptyTrash(GameObject go, bool popScore = true){
+		if (!go)
+			return;
+		Trash trash = go.GetComponent<Trash> ();
+		if (!trash)
+			return;
+
+		// Replace Trash
+		trash.ReplaceTrash ();
+		if(popScore)
+			trash.MakePopScoreGood (100);
+		// TODO: add score
+	}
+
+	void MoveTruckToFactory(){
+		iTween.MoveTo(truck,  iTween.Hash("x", positionX-1.6f,"time",timeFactoryToTrash,"easetype", iTween.EaseType.linear,
+			"oncompletetarget" , this.gameObject,
+			"oncomplete", "MoveTruckToTrash"));
+		iTween.RotateTo(truck,  iTween.Hash("y", 180f,"time",1f,"easetype", iTween.EaseType.linear));
 	}
 
 	public void Open() {

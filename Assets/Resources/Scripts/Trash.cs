@@ -42,7 +42,8 @@ public class Trash : MonoBehaviour {
 			("Trash/TrashEmpty");
 		startScale = transform.localScale.x;
 
-		draggable = Global.level == 2;
+		//Global.level = 2;
+		//draggable = Global.level == 2;
 
 		trashEmptyClone = Instantiate (trashEmpty, transform.position, transform.rotation) as GameObject;
 		trashEmptyClone.transform.localScale = transform.localScale;
