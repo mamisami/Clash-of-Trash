@@ -3,7 +3,7 @@
 public static class Global
 {
 	public static bool isSinglePlayer = true;
-	public static int level = 2;
+	public static int level = 1;
 
 	public const int MAX_DRAGGABLES = 100;
 

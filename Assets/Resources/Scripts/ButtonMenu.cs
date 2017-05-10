@@ -8,8 +8,6 @@ public class ButtonMenu : MonoBehaviour {
     public Image imgLvl;
     public Text txtLvl;
 
-	private int selectedLevel = 1;
-
     // Use this for initialization
     void Start () {
 		
@@ -33,13 +31,12 @@ public class ButtonMenu : MonoBehaviour {
 
 	public void LoadGame()
 	{
-		Global.level = selectedLevel;
 		SceneManager.LoadScene("StartScene");
 	}
 
     public void ChangeLevel(int numLevel)
     {
-		selectedLevel = numLevel;
+		Global.level = numLevel;
 
         imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+numLevel);
         txtLvl.text = "Level " + numLevel;
