@@ -34,3 +34,5 @@ sysinfo.txt
 *.exe
 *.app
 *.dll
+
+ProjectSettings/ProjectVersion\.txt
