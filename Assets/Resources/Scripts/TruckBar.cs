@@ -22,6 +22,11 @@ public class TruckBar : MonoBehaviour {
 
 	float timeFactoryToTrash = Global.TRUCK_BAR_TIME_TO_FACTORY;
 
+
+	// For call PopScore of trash in x seconds;
+	Trash t;
+	int score = 100;
+
 	// Use this for initialization
 	void Start () {
 		truck = transform.Find ("Truck").gameObject;
@@ -56,14 +61,14 @@ public class TruckBar : MonoBehaviour {
 	void TruckMovedToTrash(){
 		// Empty 
 		EmptyTrash (currentTrash1 );
-		EmptyTrash (currentTrash2, false );
+		EmptyTrash (currentTrash2, true, 0.02f);
 		currentTrash1 = null;
 		currentTrash2 = null;
 
 		this.MoveTruckToFactory ();
 	}
 
-	void EmptyTrash(GameObject go, bool popScore = true){
+	void EmptyTrash(GameObject go, bool popScore = true, float popScoreTime = 0f){
 		if (!go)
 			return;
 		Trash trash = go.GetComponent<Trash> ();
@@ -72,9 +77,19 @@ public class TruckBar : MonoBehaviour {
 
 		// Replace Trash
 		trash.ReplaceTrash ();
-		if(popScore)
-			trash.MakePopScoreGood (100);
-		// TODO: add score
+
+		if (popScore) {
+			// TODO: add score
+			score = 100;
+			t = trash;
+
+			Invoke("MakePopScoreGoodTrash", popScoreTime);
+		}
+
+	}
+
+	void MakePopScoreGoodTrash(){
+		t.MakePopScoreGood (score);
 	}
 
 	void MoveTruckToFactory(){
