@@ -114,6 +114,7 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	void release(ClassificationType classificationType) {
-		player.CmdUpdateScore (classificationType, int.Parse(this.name));
+		player.CmdAddPointToScore ((int)classificationType);
+		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
 }

@@ -90,8 +90,12 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	[Command]
-	public void CmdUpdateScore(ClassificationType classificationResult, int draggableID) {
-		score += (int)classificationResult;
+	public void CmdRemoveDraggable(int draggableID) {
 		destroyDraggable (draggableID);
+	}
+
+	[Command]
+	public void CmdAddPointToScore(int point) {
+		this.score += (int)point;
 	}
 }

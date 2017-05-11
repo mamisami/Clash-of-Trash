@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class TruckBar : MonoBehaviour {
 
@@ -26,6 +27,12 @@ public class TruckBar : MonoBehaviour {
 	// For call PopScore of trash in x seconds;
 	Trash t;
 	int score = 100;
+
+	PlayerController player;
+
+	void OnPlayerConnected(NetworkPlayer player) {
+		this.player =  GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -60,7 +67,7 @@ public class TruckBar : MonoBehaviour {
 
 	void TruckMovedToTrash(){
 		// Empty 
-		EmptyTrash (currentTrash1 );
+		EmptyTrash (currentTrash1);
 		EmptyTrash (currentTrash2, true, 0.02f);
 		currentTrash1 = null;
 		currentTrash2 = null;
@@ -85,7 +92,9 @@ public class TruckBar : MonoBehaviour {
 
 			Invoke("MakePopScoreGoodTrash", popScoreTime);
 		}
-
+		if(this.player == null)
+			this.player =  GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+		this.player.CmdAddPointToScore (score);
 	}
 
 	void MakePopScoreGoodTrash(){
