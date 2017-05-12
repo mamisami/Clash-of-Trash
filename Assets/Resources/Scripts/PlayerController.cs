@@ -9,7 +9,7 @@ public class PlayerController : NetworkBehaviour {
 	public int score = 0;
 
 	Text txtScore;
-	TimerController timer;
+	SpawnManager spawnManager;
 
 	// Use this for initialization
 	void Start () {
@@ -49,13 +49,14 @@ public class PlayerController : NetworkBehaviour {
 	}
 
 	void destroyDraggable(int draggableID) {
-		if (timer == null) {
-			GameObject timerObject = GameObject.FindWithTag ("Timer");
-			if (timerObject != null)
-				timer = timerObject.GetComponent<TimerController> ();
+		if (spawnManager == null) {
+			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
+			if (spawnManagerObject != null)
+				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
 		}
-		
-		Destroy (timer.draggables[draggableID]);
+
+		Destroy (spawnManager.draggables[draggableID]);
+		spawnManager.spawnDaggable (draggableID);
 	}
 
 	/** Command functions **/
@@ -80,13 +81,13 @@ public class PlayerController : NetworkBehaviour {
 		//if (draggable != null)
 			//draggable.transform.position = position;
 
-		if (timer == null) {
-			GameObject timerObject = GameObject.FindWithTag ("Timer");
-			if (timerObject != null)
-				timer = timerObject.GetComponent<TimerController> ();
+		if (spawnManager == null) {
+			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManagerObject");
+			if (spawnManagerObject != null)
+				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
 		}
 
-		timer.draggables[id].transform.position = newPosition;
+		spawnManager.draggables[id].transform.position = newPosition;
 	}
 
 	[Command]

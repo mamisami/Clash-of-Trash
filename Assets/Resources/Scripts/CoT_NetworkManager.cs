@@ -27,12 +27,6 @@ public class CoT_NetworkManager : NetworkManager {
 
 		countPlayers++;
 
-		/*
-		Object playerPrefab = Resources.Load ("Prefabs/Player", typeof(GameObject));
-		GameObject playerGameObject = Instantiate (playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-		NetworkServer.AddPlayerForConnection(conn, playerGameObject, 0);
-		*/
-
 		if (countPlayers < 2 && !Global.isSinglePlayer) {
 			//countText.text = "Wait for one more player (" + countPlayers + ")";
 		} else { 
@@ -41,10 +35,8 @@ public class CoT_NetworkManager : NetworkManager {
 				discovery.StopBroadcast ();
 			//countText.text = "";
 
-			Object timerPrefab = Resources.Load ("Prefabs/Timer", typeof(GameObject));
-			Instantiate(timerPrefab, Vector3.zero, Quaternion.identity);
-			//TimerController timer = timerGameObject.GetComponent<TimerController> ();
-			//NetworkServer.Spawn (timerGameObject);
+			Object spawnManagerPrefab = Resources.Load ("Prefabs/SpawnManager", typeof(GameObject));
+			Instantiate(spawnManagerPrefab, Vector3.zero, Quaternion.identity);
 		}
 	}
 
@@ -69,9 +61,9 @@ public class CoT_NetworkManager : NetworkManager {
 	}
 
 	private void clearGame() {
-		GameObject timer = GameObject.FindWithTag ("Timer");
-		if (timer)
-			Destroy (timer);
+		GameObject spawnManager = GameObject.FindWithTag ("SpawnManager");
+		if (spawnManager)
+			Destroy (spawnManager);
 
 		this.maxConnections = 2; 
 

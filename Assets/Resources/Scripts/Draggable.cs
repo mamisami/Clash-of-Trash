@@ -114,6 +114,8 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	void release(ClassificationType classificationType) {
+		if (player == null)
+			player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
 		player.CmdAddPointToScore ((int)classificationType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
