@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Trash : MonoBehaviour {
-	public string trashType = "waste";
+	public ClassificationType trashType = ClassificationType.Waste;
 	public Color colorGoodText = Color.green;
 	public Color colorBadText = Color.red;
 	public bool draggable = true;

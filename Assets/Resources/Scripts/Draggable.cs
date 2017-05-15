@@ -14,6 +14,8 @@ public class Draggable : NetworkBehaviour {
 	public int paperPts = 0;
 	public int petPts = 0;
 
+	private int[] pts = new int[6];
+
 	PlayerController player;
 
 	Trash trash = null;
@@ -36,6 +38,13 @@ public class Draggable : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		setPlayer ();
+
+		pts [(int)ClassificationType.Waste] = wastePts;
+		pts [(int)ClassificationType.Alu] = aluPts;
+		pts [(int)ClassificationType.Compost] = compostPts;
+		pts [(int)ClassificationType.Glass] = glassPts;
+		pts [(int)ClassificationType.Paper] = paperPts;
+		pts [(int)ClassificationType.Pet] = petPts;
 
 		gameObject.transform.localScale = new Vector3 (0f, 0f, 0f);
 		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",1f,"easetype", iTween.EaseType.easeOutElastic));
@@ -67,6 +76,13 @@ public class Draggable : NetworkBehaviour {
 		move (cursorPosition);
 	}
 
+	int GetPoints() {
+		if (this.trash != null)
+			return pts [(int)this.trash.trashType];
+
+		return 0;
+	}
+
 	void OnMouseUp(){
 		// Anim to grow down
 		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
@@ -74,12 +90,13 @@ public class Draggable : NetworkBehaviour {
 		if (isObjectInTrash () && !trash.IsInTruckBar()) {
 			trash.Close ();
 
-			//TODO: Determiner si le release est le bon
-			release (ClassificationType.Good);
+			int pts = GetPoints();
+			release (pts);
 			this.trash.MakeParticleEffect ();
-			this.trash.MakePopScoreGood (10); // Or MakePopScoreBad(score)
-
-			//Destroy (gameObject);
+			if (pts >= 0)
+				this.trash.MakePopScoreGood (pts);
+			else
+				this.trash.MakePopScoreBad (pts);
 		}
 	}
 
@@ -130,10 +147,10 @@ public class Draggable : NetworkBehaviour {
 		player.CmdMoveDraggable (int.Parse(this.name), newPosition);
 	}
 
-	void release(ClassificationType classificationType) {
+	void release(int pts) {
 		setPlayer ();
 
-		player.CmdAddPointToScore ((int)classificationType);
+		player.CmdAddPointToScore (pts);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
 }

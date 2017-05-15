@@ -1,3 +1,3 @@
 ﻿using System;
 
-public enum ClassificationType {Good=Global.GOOD_CLASSIFICATION_SCORE, False=Global.FALSE_CLASSIFICATION_SCORE} 
+public enum ClassificationType {Waste=0, Alu=1, Compost=2, Glass=3, Paper=4, Pet=5} 
