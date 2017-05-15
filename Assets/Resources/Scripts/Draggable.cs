@@ -18,9 +18,17 @@ public class Draggable : NetworkBehaviour {
 	[SyncVar(hook="OnNameChange")]
 	public string realName = "";
 
+	void setPlayer() {
+		if (player == null) {
+			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
+			if (localPlayerObject != null)
+				player = localPlayerObject.GetComponent<PlayerController>();
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
-		player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+		setPlayer ();
 
 		gameObject.transform.localScale = new Vector3 (0f, 0f, 0f);
 		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",1f,"easetype", iTween.EaseType.easeOutElastic));
@@ -36,6 +44,8 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	void OnMouseDown(){
+		setPlayer ();
+
 		screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 		offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
 
@@ -114,8 +124,8 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	void release(ClassificationType classificationType) {
-		if (player == null)
-			player = GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+		setPlayer ();
+
 		player.CmdAddPointToScore ((int)classificationType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
