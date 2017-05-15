@@ -11,6 +11,8 @@ public static class Global
 
 	public const float TRUCK_BAR_TIME_TO_FACTORY = 3f; // In seconds
 
+	public static string[] WASTES = new string[] { "Prefabs/Wastes/CerealBox", "Prefabs/Wastes/CerealBox2" };
+
 	public static Vector3[] draggablesCoordinates = new [] { 
 		new Vector3(-2.607f,18.16f), new Vector3(-1.507f,18.16f), new Vector3(-0.477f,18.16f), new Vector3(0.623f,18.16f), new Vector3(1.633f,18.16f), new Vector3(2.633f,18.16f),
 		new Vector3(-2.607f,19.62f), new Vector3(-1.507f,19.62f), new Vector3(-0.477f,19.62f), new Vector3(0.623f,19.62f), new Vector3(1.633f,19.62f), new Vector3(2.633f,19.62f),

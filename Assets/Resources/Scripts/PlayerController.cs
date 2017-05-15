@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour {
 			//draggable.transform.position = position;
 
 		if (spawnManager == null) {
-			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManagerObject");
+			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
 			if (spawnManagerObject != null)
 				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
 		}

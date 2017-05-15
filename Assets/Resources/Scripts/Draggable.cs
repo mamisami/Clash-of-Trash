@@ -4,9 +4,15 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 
-
 // Draggable object, when collising with another object, destroy
 public class Draggable : NetworkBehaviour {
+
+	public int wastePts = 0;
+	public int aluPts = 0;
+	public int compostPts = 0;
+	public int glassPts = 0;
+	public int paperPts = 0;
+	public int petPts = 0;
 
 	PlayerController player;
 
@@ -15,6 +21,7 @@ public class Draggable : NetworkBehaviour {
 	Vector3 screenPoint;
 	Vector3 offset;
 
+	[HideInInspector]
 	[SyncVar(hook="OnNameChange")]
 	public string realName = "";
 

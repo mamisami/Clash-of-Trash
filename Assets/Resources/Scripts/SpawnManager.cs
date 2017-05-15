@@ -25,7 +25,8 @@ public class SpawnManager : NetworkBehaviour {
 	}
 
 	public void spawnDaggable(int draggableID) {
-		Object draggablePrefab = Resources.Load ("Prefabs/Draggable", typeof(GameObject));
+		//Object draggablePrefab = Resources.Load ("Prefabs/Draggable", typeof(GameObject));
+		Object draggablePrefab = Resources.Load (Global.WASTES[Random.Range(0, Global.WASTES.Length)], typeof(GameObject));
 		GameObject draggableGameObject = Instantiate (draggablePrefab, Global.draggablesCoordinates[draggableID], draggableRotation) as GameObject;
 		NetworkServer.Spawn (draggableGameObject);
 
