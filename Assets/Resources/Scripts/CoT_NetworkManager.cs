@@ -37,6 +37,10 @@ public class CoT_NetworkManager : NetworkManager {
 
 			Object spawnManagerPrefab = Resources.Load ("Prefabs/SpawnManager", typeof(GameObject));
 			Instantiate(spawnManagerPrefab, Vector3.zero, Quaternion.identity);
+
+			Object truckBarPrefab = Resources.Load ("Prefabs/TruckBar", typeof(GameObject));
+			GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 24.30f, 0f), Quaternion.identity) as GameObject;
+			NetworkServer.Spawn (truckBarObject);
 		}
 	}
 

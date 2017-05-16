@@ -11,6 +11,9 @@ public class PlayerController : NetworkBehaviour {
 	Text txtScore;
 	SpawnManager spawnManager;
 
+	GameObject truckBarTrash1;
+	GameObject truckBarTrash2;
+
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();

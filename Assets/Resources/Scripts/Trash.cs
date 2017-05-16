@@ -132,7 +132,7 @@ public class Trash : MonoBehaviour {
 			moving = false;
 			if (truckbar) {
 				isInTruckBar = true;
-				truckbar.PlaceTrash (this.gameObject);
+				truckbar.PlaceTrash (this.gameObject, this);
 				truckbar.Close ();
 			} else{
 				ReplaceTrash ();

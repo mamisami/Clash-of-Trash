@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class TruckBar : MonoBehaviour {
+public class TruckBar : NetworkBehaviour {
+	PlayerController localPlayer;
+	PlayerController adversary;
 
 	float positionX = 0;
 
@@ -15,9 +17,8 @@ public class TruckBar : MonoBehaviour {
 	Vector3 emptyTrash2Position;
 	Vector3 emptyTrashScale;
 
-	GameObject currentTrash1;
-	GameObject currentTrash2;
-
+	GameObject trashSlot1; //The one is for local user
+	GameObject trashSlot2; //The other for the adversary or the second on single player mode
 
 	int indexTrash = 1;
 
@@ -28,14 +29,24 @@ public class TruckBar : MonoBehaviour {
 	Trash t;
 	int score = 100;
 
-	PlayerController player;
+	void setPlayers() {
+		if (localPlayer == null) {
+			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
+			if (localPlayerObject != null)
+				localPlayer = localPlayerObject.GetComponent<PlayerController>();
+		}
 
-	void OnPlayerConnected(NetworkPlayer player) {
-		this.player =  GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
+		if (adversary == null) {
+			GameObject adversaryObject = GameObject.FindGameObjectWithTag ("Player");
+			if (adversaryObject != null)
+				adversary = adversaryObject.GetComponent<PlayerController>();
+		}
 	}
 
 	// Use this for initialization
 	void Start () {
+		setPlayers ();
+
 		truck = transform.Find ("Truck").gameObject;
 		positionX = truck.transform.position.x;
 
@@ -67,34 +78,42 @@ public class TruckBar : MonoBehaviour {
 
 	void TruckMovedToTrash(){
 		// Empty 
-		EmptyTrash (currentTrash1);
-		EmptyTrash (currentTrash2, true, 0.02f);
-		currentTrash1 = null;
-		currentTrash2 = null;
+		EmptyTrash (trashSlot1);
+		EmptyTrash (trashSlot2, 0.02f);
+		trashSlot1 = null;
+		trashSlot2 = null;
 
 		this.MoveTruckToFactory ();
 	}
 
-	void EmptyTrash(GameObject go, bool popScore = true, float popScoreTime = 0f){
+	void EmptyTrash(GameObject go, float popScoreTime = 0.0f){			
 		if (!go)
 			return;
+		
 		Trash trash = go.GetComponent<Trash> ();
+
 		if (!trash)
 			return;
 
 		// Replace Trash
 		trash.ReplaceTrash ();
 
-		if (popScore) {
+		if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1)) {
 			// TODO: add score
 			score = 100;
 			t = trash;
 
-			Invoke("MakePopScoreGoodTrash", popScoreTime);
+			Invoke ("MakePopScoreGoodTrash", popScoreTime);
 		}
-		if(this.player == null)
-			this.player =  GameObject.FindGameObjectWithTag("LocalPlayer").GetComponent<PlayerController>();
-		this.player.CmdAddPointToScore (score);
+
+		if (isServer) {
+			setPlayers ();	
+
+			if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1))
+				this.localPlayer.CmdAddPointToScore (score);
+			else
+				this.adversary.CmdAddPointToScore (score);
+		}
 	}
 
 	void MakePopScoreGoodTrash(){
@@ -117,10 +136,28 @@ public class TruckBar : MonoBehaviour {
 	}
 
 	// 0 : auto
-	public void PlaceTrash(GameObject trash, int num = 0){
-		indexTrash += 1;
-		if (num == 0)
-			num = indexTrash % 2 + 1;
+	public void PlaceTrash(GameObject trash, Trash tr){
+		int num;
+
+		if (Global.isSinglePlayer) {
+			if (trashSlot1 == null)
+				num = 1;
+			else if (trashSlot2 == null)
+				num = 2;
+			else {
+				tr.ReplaceTrash ();
+
+				return;
+			}
+		} else {
+			num = 1;
+
+			if (trashSlot1 != null) {
+				tr.ReplaceTrash ();
+
+				return;
+			}
+		}
 		
 		Vector3 pos = emptyTrash1Position;
 
@@ -128,15 +165,15 @@ public class TruckBar : MonoBehaviour {
 			pos = emptyTrash2Position;
 
 			// Update current trash 1
-			if (currentTrash2 && currentTrash2 != trash/* Not the same */)
-				currentTrash2.GetComponent<Trash>().ReplaceTrash ();
-			currentTrash2 = trash;
+			if (trashSlot2 && trashSlot2 != trash/* Not the same */)
+				trashSlot2.GetComponent<Trash>().ReplaceTrash ();
+			trashSlot2 = trash;
 		} else {
 
 			// Update current trash 2
-			if (currentTrash1 && currentTrash1 != trash)
-				currentTrash1.GetComponent<Trash>().ReplaceTrash ();
-			currentTrash1 = trash;
+			if (trashSlot1 && trashSlot1 != trash)
+				trashSlot1.GetComponent<Trash>().ReplaceTrash ();
+			trashSlot1 = trash;
 		}
 
 		iTween.ScaleTo(trash,  iTween.Hash("scale", emptyTrashScale, "time",0.8f,"easetype", iTween.EaseType.easeOutExpo));

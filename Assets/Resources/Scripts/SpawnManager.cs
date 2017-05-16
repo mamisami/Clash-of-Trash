@@ -15,7 +15,7 @@ public class SpawnManager : NetworkBehaviour {
 	void Start () {
 		Random.InitState ((int)System.DateTime.Now.Ticks);
 
-		for (int i = 0; i < Global.draggablesCoordinates.Length; i++)
+		for (int i = 0; i < Global.draggablesCoordinates.Length - (Global.level==2 ? 6 : 0); i++)
 			spawnDaggable (i);
 	}
 
