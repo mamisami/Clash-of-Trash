@@ -9,7 +9,7 @@ public class SpawnManager : NetworkBehaviour {
 	//int draggableID = 0;
 	public GameObject[] draggables = new GameObject[Global.draggablesCoordinates.Length];
 
-	Quaternion draggableRotation = Quaternion.Euler(-90, 0,0);
+	Quaternion draggableRotation = Quaternion.Euler(0, 0,0);
 
 	private GameObject[] draggablesPrefabs;
 

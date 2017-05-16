@@ -23,6 +23,8 @@ public class Draggable : NetworkBehaviour {
 	Vector3 screenPoint;
 	Vector3 offset;
 
+	Vector3 normalScale = new Vector3(1f,1f,1f);
+
 	[HideInInspector]
 	[SyncVar(hook="OnNameChange")]
 	public string realName = "";
@@ -31,7 +33,7 @@ public class Draggable : NetworkBehaviour {
 		if (player == null) {
 			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
 			if (localPlayerObject != null)
-				player = localPlayerObject.GetComponent<PlayerController>();
+				player = localPlayerObject.GetComponent<PlayerController> ();
 		}
 	}
 
@@ -46,8 +48,9 @@ public class Draggable : NetworkBehaviour {
 		pts [(int)ClassificationType.Paper] = paperPts;
 		pts [(int)ClassificationType.Pet] = petPts;
 
+		normalScale = gameObject.transform.localScale;
 		gameObject.transform.localScale = new Vector3 (0f, 0f, 0f);
-		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",1f,"easetype", iTween.EaseType.easeOutElastic));
+		iTween.ScaleTo(gameObject, iTween.Hash("scale", normalScale,"time",1f,"easetype", iTween.EaseType.easeOutElastic));
 	}
 
 	void OnDestroy() {
@@ -66,7 +69,7 @@ public class Draggable : NetworkBehaviour {
 		offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
 
 		// Anim to grow up
-		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1.2f,1.2f,1.2f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
+		iTween.ScaleTo(gameObject, iTween.Hash("scale",normalScale + normalScale*0.2f,"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
 	}
 
 	void OnMouseDrag(){
@@ -85,7 +88,7 @@ public class Draggable : NetworkBehaviour {
 
 	void OnMouseUp(){
 		// Anim to grow down
-		iTween.ScaleTo(gameObject, iTween.Hash("scale",new Vector3(1f,1f,1f),"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
+		iTween.ScaleTo(gameObject, iTween.Hash("scale",normalScale,"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
 
 		if (isObjectInTrash () && !trash.IsInTruckBar()) {
 			trash.Close ();
