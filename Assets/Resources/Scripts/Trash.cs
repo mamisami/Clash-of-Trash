@@ -87,7 +87,7 @@ public class Trash : MonoBehaviour {
 		txtMesh.text = text;
 		txtMesh.color = color;
 		posText.y += 1f;
-		//posText.z += 1;
+		posText.z -= 1; // Place text in front of all
 		bonusClone.transform.position = posText;
 	}
 
@@ -96,7 +96,10 @@ public class Trash : MonoBehaviour {
 	}
 
 	public void MakePopScoreBad(int score){
-		MakePopText("-"+score, colorBadText);
+		string prefix = "-";
+		if (score < 0)
+			prefix = "";
+		MakePopText(prefix+score, colorBadText);
 	}
 
 	void OnMouseDown(){

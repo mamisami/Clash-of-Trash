@@ -59,7 +59,7 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		Destroy (spawnManager.draggables[draggableID]);
-		spawnManager.spawnDaggable (draggableID);
+		spawnManager.spawnDraggable (draggableID);
 	}
 
 	/** Command functions **/
