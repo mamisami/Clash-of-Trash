@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class Global
 {
-	public static bool isSinglePlayer = false;
+	public static bool isSinglePlayer = true;
 	public static int level = 2;
 
 	public const int GOOD_CLASSIFICATION_SCORE = 10;

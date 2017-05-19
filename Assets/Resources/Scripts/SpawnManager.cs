@@ -20,7 +20,7 @@ public class SpawnManager : NetworkBehaviour {
 		Random.InitState ((int)System.DateTime.Now.Ticks);
 
 		for (int i = 0; i < Global.draggablesCoordinates.Length - (Global.level==2 ? 6 : 0); i++)
-			spawnDaggable (i);
+			spawnDraggable (i);
 	}
 
 	// Update is called once per frame
