@@ -33,7 +33,10 @@ public class CoT_NetworkManager : NetworkManager {
 			this.maxConnections = -1; 
 			if(!Global.isSinglePlayer)
 				discovery.StopBroadcast ();
-			//countText.text = "";
+
+			Object trashControllerPrefab = Resources.Load ("Prefabs/TrashManager", typeof(GameObject));
+			GameObject trashControllerObject = Instantiate(trashControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			NetworkServer.Spawn (trashControllerObject);
 
 			Object spawnManagerPrefab = Resources.Load ("Prefabs/SpawnManager", typeof(GameObject));
 			Instantiate(spawnManagerPrefab, Vector3.zero, Quaternion.identity);

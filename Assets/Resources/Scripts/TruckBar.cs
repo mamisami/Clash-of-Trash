@@ -7,6 +7,8 @@ public class TruckBar : NetworkBehaviour {
 	PlayerController localPlayer;
 	PlayerController adversary;
 
+	TrashManager trashManager;
+
 	float positionX = 0;
 
 	GameObject truck;
@@ -24,12 +26,7 @@ public class TruckBar : NetworkBehaviour {
 
 	float timeFactoryToTrash = Global.TRUCK_BAR_TIME_TO_FACTORY;
 
-
-	// For call PopScore of trash in x seconds;
-	Trash t;
-	int score = 100;
-
-	void setPlayers() {
+	void setControllers() {
 		if (localPlayer == null) {
 			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
 			if (localPlayerObject != null)
@@ -41,11 +38,17 @@ public class TruckBar : NetworkBehaviour {
 			if (adversaryObject != null)
 				adversary = adversaryObject.GetComponent<PlayerController>();
 		}
+
+		if (trashManager == null) {
+			GameObject trashManagerObject = GameObject.FindGameObjectWithTag ("TrashManager");
+			if (trashManagerObject != null)
+				trashManager = trashManagerObject.GetComponent<TrashManager>();
+		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		setPlayers ();
+		setControllers ();
 
 		truck = transform.Find ("Truck").gameObject;
 		positionX = truck.transform.position.x;
@@ -79,14 +82,14 @@ public class TruckBar : NetworkBehaviour {
 	void TruckMovedToTrash(){
 		// Empty 
 		EmptyTrash (trashSlot1);
-		EmptyTrash (trashSlot2, 0.02f);
+		EmptyTrash (trashSlot2);
 		trashSlot1 = null;
 		trashSlot2 = null;
 
 		this.MoveTruckToFactory ();
 	}
 
-	void EmptyTrash(GameObject go, float popScoreTime = 0.0f){			
+	void EmptyTrash(GameObject go){	
 		if (!go)
 			return;
 		
@@ -99,26 +102,27 @@ public class TruckBar : NetworkBehaviour {
 		trash.ReplaceTrash ();
 		trash.draggable = true;
 
-		if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1)) {
-			// TODO: add score
-			score = 100;
-			t = trash;
+		int score = 0; 
+		try {
+			setControllers ();	
+			score = trashManager.getPoints(trash.trashType);
+		} catch {
+			
+		}
 
-			Invoke ("MakePopScoreGoodTrash", popScoreTime);
+		if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1)) {
+			trash.MakePopScoreGood (score);
+			//Invoke ("MakePopScoreGoodTrash", popScoreTime);
 		}
 
 		if (isServer) {
-			setPlayers ();	
-
 			if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1))
 				this.localPlayer.CmdAddPointToScore (score);
 			else
 				this.adversary.CmdAddPointToScore (score);
-		}
-	}
 
-	void MakePopScoreGoodTrash(){
-		t.MakePopScoreGood (score);
+			trashManager.reinitWaste(trash.trashType);
+		}
 	}
 
 	void MoveTruckToFactory(){
@@ -158,7 +162,7 @@ public class TruckBar : NetworkBehaviour {
 				return;
 			}
 
-			setPlayers();
+			setControllers();
 			localPlayer.CmdAddTrashToTruckBar(trash.tag);
 		}
 

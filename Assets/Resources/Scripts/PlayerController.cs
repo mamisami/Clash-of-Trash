@@ -10,18 +10,24 @@ public class PlayerController : NetworkBehaviour {
 
 	Text txtScore;
 	SpawnManager spawnManager;
-	PlayerController adversary;
+	TrashManager trashManager;
 
 	GameObject truckBarTrash1;
 	GameObject truckBarTrash2;
 
-	void setAdversary() {
-		if (adversary == null) {
-			GameObject adversaryObject = GameObject.FindGameObjectWithTag ("Player");
-			if (adversaryObject != null)
-				adversary = adversaryObject.GetComponent<PlayerController>();
+	public void setManagers() {
+		if (spawnManager == null) {
+			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
+			if (spawnManagerObject != null)
+				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
 		}
-	}
+
+		if (trashManager == null) {
+			GameObject trashManagerObject = GameObject.FindWithTag ("TrashManager");
+			if (trashManagerObject != null)
+				trashManager = trashManagerObject.GetComponent<TrashManager> ();
+		}
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -30,7 +36,6 @@ public class PlayerController : NetworkBehaviour {
 
 	override public void OnStartLocalPlayer() {
 		this.tag = "LocalPlayer";
-		setAdversary();
 	}
 	
 	// Update is called once per frame
@@ -61,16 +66,7 @@ public class PlayerController : NetworkBehaviour {
 			txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
 	}
 
-	void destroyDraggable(int draggableID) {
-		if (spawnManager == null) {
-			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
-			if (spawnManagerObject != null)
-				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
-		}
 
-		Destroy (spawnManager.draggables[draggableID]);
-		spawnManager.spawnDraggable (draggableID);
-	}
 
 	/** Command functions **/
 	/*
@@ -88,29 +84,30 @@ public class PlayerController : NetworkBehaviour {
 	*/
 
 	[Command]
-	public void CmdMoveDraggable(int id, Vector3 newPosition) {
-		//GameObject draggable = FindDraggableWithRealName (name);
-		//GameObject draggable = GameObject.Find(name);
-		//if (draggable != null)
-			//draggable.transform.position = position;
+	public void CmdAddPointToScore(int point) {
+		this.score += (int)point;
+	}
 
-		if (spawnManager == null) {
-			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
-			if (spawnManagerObject != null)
-				spawnManager = spawnManagerObject.GetComponent<SpawnManager> ();
-		}
+	[Command]
+	public void CmdAddWaste(ClassificationType type) {
+		setManagers();
+		
+		trashManager.addWaste(type);
+	}
+
+	[Command]
+	public void CmdMoveDraggable(int id, Vector3 newPosition) {
+		setManagers();
 
 		spawnManager.draggables[id].transform.position = newPosition;
 	}
 
-	[Command]
+    [Command]
 	public void CmdRemoveDraggable(int draggableID) {
-		destroyDraggable (draggableID);
-	}
+        setManagers();
 
-	[Command]
-	public void CmdAddPointToScore(int point) {
-		this.score += (int)point;
+		Destroy (spawnManager.draggables[draggableID]);
+		spawnManager.spawnDraggable (draggableID);
 	}
 
 	[Command]

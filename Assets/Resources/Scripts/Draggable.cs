@@ -154,6 +154,7 @@ public class Draggable : NetworkBehaviour {
 		setPlayer ();
 
 		player.CmdAddPointToScore (pts);
+		player.CmdAddWaste (trash.trashType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
 }
