@@ -3,13 +3,13 @@ using UnityEngine;
 
 public static class Global
 {
-	public static bool isSinglePlayer = true;
+	public static bool isSinglePlayer = false;
 	public static int level = 2;
 
 	public const int GOOD_CLASSIFICATION_SCORE = 10;
 	public const int FALSE_CLASSIFICATION_SCORE = -5;
 
-	public const float TRUCK_BAR_TIME_TO_FACTORY = 3f; // In seconds
+	public const float TRUCK_BAR_TIME_TO_FACTORY = 10f; // In seconds
 
 	public static string WASTES_PATH = "Prefabs/Wastes";
 

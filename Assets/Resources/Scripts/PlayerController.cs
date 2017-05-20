@@ -10,9 +10,18 @@ public class PlayerController : NetworkBehaviour {
 
 	Text txtScore;
 	SpawnManager spawnManager;
+	PlayerController adversary;
 
 	GameObject truckBarTrash1;
 	GameObject truckBarTrash2;
+
+	void setAdversary() {
+		if (adversary == null) {
+			GameObject adversaryObject = GameObject.FindGameObjectWithTag ("Player");
+			if (adversaryObject != null)
+				adversary = adversaryObject.GetComponent<PlayerController>();
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -21,6 +30,7 @@ public class PlayerController : NetworkBehaviour {
 
 	override public void OnStartLocalPlayer() {
 		this.tag = "LocalPlayer";
+		setAdversary();
 	}
 	
 	// Update is called once per frame
@@ -101,5 +111,31 @@ public class PlayerController : NetworkBehaviour {
 	[Command]
 	public void CmdAddPointToScore(int point) {
 		this.score += (int)point;
+	}
+
+	[Command]
+	public void CmdAddTrashToTruckBar(string tag) {
+		if (isLocalPlayer) {
+			RpcAddTrashToTruckBar(tag);
+		} else {
+			AddTrashToTruckBar(tag);
+		}
+	}
+
+	[ClientRpc]
+	public void RpcAddTrashToTruckBar(string tag) {
+		if (!isLocalPlayer) {
+			AddTrashToTruckBar(tag);
+		}
+	}
+
+	public void AddTrashToTruckBar(string tag) {
+		GameObject trashObject = GameObject.FindWithTag(tag);
+		Trash trash = trashObject.GetComponent<Trash>();
+
+		TruckBar truckBar = GameObject.FindWithTag("TruckBar").GetComponent<TruckBar>();
+
+		trash.ShowEmptyTrash();
+		truckBar.AddTrash(trashObject, trash, 2);
 	}
 }

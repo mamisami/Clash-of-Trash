@@ -97,6 +97,7 @@ public class TruckBar : NetworkBehaviour {
 
 		// Replace Trash
 		trash.ReplaceTrash ();
+		trash.draggable = true;
 
 		if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1)) {
 			// TODO: add score
@@ -135,7 +136,6 @@ public class TruckBar : NetworkBehaviour {
 		iTween.FadeTo(gameObject,  iTween.Hash("alpha", 1f,"time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 	}
 
-	// 0 : auto
 	public void PlaceTrash(GameObject trash, Trash tr){
 		int num;
 
@@ -157,8 +157,17 @@ public class TruckBar : NetworkBehaviour {
 
 				return;
 			}
+
+			setPlayers();
+			localPlayer.CmdAddTrashToTruckBar(trash.tag);
 		}
-		
+
+		AddTrash(trash, tr, num);
+	}
+
+	public void AddTrash(GameObject trash, Trash tr, int num){		
+		tr.draggable = false;
+
 		Vector3 pos = emptyTrash1Position;
 
 		if (num == 2) {

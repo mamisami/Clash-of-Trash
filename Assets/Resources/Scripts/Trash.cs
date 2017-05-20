@@ -162,7 +162,7 @@ public class Trash : MonoBehaviour {
 		iTween.ScaleTo (gameObject, iTween.Hash ("scale", new Vector3 (startScale + 0.2f, startScale + 0.2f, startScale + 0.2f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 	}
 
-	void ShowEmptyTrash(){
+	public void ShowEmptyTrash(){
 		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 1, "time",0.3f,"easetype", iTween.EaseType.linear));
 		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale, startScale, startScale), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 	}
