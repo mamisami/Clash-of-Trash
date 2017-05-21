@@ -15,6 +15,41 @@ public class PlayerController : NetworkBehaviour {
 	GameObject truckBarTrash1;
 	GameObject truckBarTrash2;
 
+
+	public class Explanation {
+		bool isError;
+		string waste;
+		string badTrash;
+		string goodTrash;
+
+		public Explanation(bool isError, string waste, string goodTrash, string badTrash = ""){
+			this.isError = isError;
+			this.waste = waste;
+			this.badTrash = badTrash;
+			this.goodTrash = goodTrash;
+		}
+
+		public string getKey(){
+			return (this.isError ? "0" : "1") + this.waste + this.badTrash + this.goodTrash;
+		}
+			
+		public void addTo(SortedList<string, Explanation> list){
+			string key = getKey ();
+			if (!list.ContainsKey (key))
+				list.Add (key, this);
+		}
+	}
+
+	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
+
+	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = ""){
+		(new Explanation (isError, waste, badTrash, goodTrash)).addTo (this.explanations);
+		Debug.Log ("LIST");
+		foreach (KeyValuePair<string, Explanation> expl in explanations) {
+			Debug.Log (expl.Key);
+		}
+	}
+
 	public void setManagers() {
 		if (spawnManager == null) {
 			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEditor;
+
+
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 
@@ -15,6 +18,7 @@ public class Draggable : NetworkBehaviour {
 	public int petPts = 0;
 
 	private int[] pts = new int[6];
+	public string bestTrashSprite;
 
 	PlayerController player;
 
@@ -48,9 +52,30 @@ public class Draggable : NetworkBehaviour {
 		pts [(int)ClassificationType.Paper] = paperPts;
 		pts [(int)ClassificationType.Pet] = petPts;
 
+		UpdateBestTrashSprite ();
+
 		normalScale = gameObject.transform.localScale;
 		gameObject.transform.localScale = new Vector3 (0f, 0f, 0f);
 		iTween.ScaleTo(gameObject, iTween.Hash("scale", normalScale,"time",1f,"easetype", iTween.EaseType.easeOutElastic));
+	}
+
+	void UpdateBestTrashSprite(){
+		int best = 0;
+
+		// Find best classifcationType
+		for(int i = 1; i<pts.Length;i++){
+			if(pts[i] > pts[best])
+				best = i;
+		}
+
+		GameObject[] trashes = Resources.LoadAll<GameObject>("Trash");
+
+		// Find prefab for best trashes and get sprite
+		foreach(GameObject trash in trashes){
+			Trash t = trash.GetComponent<Trash>();
+			if(t && (int)t.trashType == best)
+				this.bestTrashSprite = t.GetComponent<SpriteRenderer>().sprite.name;
+		}	
 	}
 
 	void OnDestroy() {
@@ -96,10 +121,15 @@ public class Draggable : NetworkBehaviour {
 			int pts = GetPoints();
 			release (pts);
 			this.trash.MakeParticleEffect ();
-			if (pts >= 0)
+
+			setPlayer ();
+			if (pts >= 0) {
 				this.trash.MakePopScoreGood (pts);
-			else
+				player.addExplanation(false, GetComponent<SpriteRenderer>().sprite.name, trash.GetComponent<SpriteRenderer>().sprite.name);
+			} else {
 				this.trash.MakePopScoreBad (pts);
+				player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, trash.GetComponent<SpriteRenderer>().sprite.name);
+			}
 		}
 	}
 
