@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3c619b1febe9b490c884d2402f2e12a4
+timeCreated: 1495478484
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Game Of Life
+  fontNames:
+  - Game Of Life
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
