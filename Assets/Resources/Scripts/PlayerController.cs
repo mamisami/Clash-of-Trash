@@ -17,10 +17,10 @@ public class PlayerController : NetworkBehaviour {
 
 
 	public class Explanation {
-		bool isError;
-		string waste;
-		string badTrash;
-		string goodTrash;
+		public bool isError;
+		public string waste;
+		public string badTrash;
+		public string goodTrash;
 
 		public Explanation(bool isError, string waste, string goodTrash, string badTrash = ""){
 			this.isError = isError;
@@ -35,19 +35,66 @@ public class PlayerController : NetworkBehaviour {
 			
 		public void addTo(SortedList<string, Explanation> list){
 			string key = getKey ();
-			if (!list.ContainsKey (key))
+			if (!list.ContainsKey (key)) 
 				list.Add (key, this);
 		}
 	}
 
 	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
 
+	public void generateExplanationScrollView(){
+		GameObject content = GameObject.Find("/Canvas/Scroll View/Viewport/Content");
+		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
+		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
+
+		float SIZE_ITEM = 1.5f;
+		// Remove all raws
+		var children = new List<GameObject>();
+		foreach (Transform child in content.transform) children.Add(child.gameObject);
+		children.ForEach(child => Destroy(child));
+
+		Vector2 sd = content.GetComponent<RectTransform> ().sizeDelta;
+		sd.y = 75 * explanations.Count;
+
+		int i = 0;
+
+		foreach (KeyValuePair<string, Explanation> explKeyVal in explanations) {
+			Explanation exp = explKeyVal.Value;
+			GameObject go = goodRow;
+			if (exp.isError)
+				go = badRow;
+
+			Vector3 pos = content.transform.position;
+			pos.y -= SIZE_ITEM*i-SIZE_ITEM/2;
+			GameObject row = Instantiate (go, pos, Quaternion.identity, content.transform);
+			row.transform.FindChild ("ImageWaste").GetComponent<Image>().sprite = 
+				Resources.Load<Sprite> ("Sprites/Waste/" + exp.waste);
+			row.transform.FindChild ("ImageTrash1").GetComponent<Image>().sprite = 
+				stringTrashToSprite (exp.goodTrash);
+			if (exp.isError) {
+				row.transform.FindChild ("ImageTrash2").GetComponent<Image>().sprite = 
+					stringTrashToSprite (exp.badTrash);
+			}
+
+			i++;
+		}
+
+		content.GetComponent<RectTransform> ().sizeDelta = sd;
+	}
+
+	private Sprite stringTrashToSprite(string str){
+		Debug.Log ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
+		return Resources.Load<Sprite> ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
+	}
+
 	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = ""){
-		(new Explanation (isError, waste, badTrash, goodTrash)).addTo (this.explanations);
-		Debug.Log ("LIST");
+		(new Explanation (isError, waste, goodTrash, badTrash)).addTo (this.explanations);
 		foreach (KeyValuePair<string, Explanation> expl in explanations) {
 			Debug.Log (expl.Key);
 		}
+
+		// TODO: remove that and call only at the end
+		generateExplanationScrollView ();
 	}
 
 	public void setManagers() {
