@@ -7,7 +7,7 @@ public class SpawnManager : NetworkBehaviour {
 	//float timeLeft = 1.0f;
 
 	//int draggableID = 0;
-	public GameObject[] draggables = new GameObject[Global.draggablesCoordinates.Length];
+	public GameObject[] draggables;
 
 	Quaternion draggableRotation = Quaternion.Euler(0, 0,0);
 
@@ -15,6 +15,8 @@ public class SpawnManager : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		draggables = new GameObject[Global.draggablesCoordinates.Length];
+
 		draggablesPrefabs = Resources.LoadAll<GameObject>(Global.WASTES_PATH);
 
 		Random.InitState ((int)System.DateTime.Now.Ticks);
