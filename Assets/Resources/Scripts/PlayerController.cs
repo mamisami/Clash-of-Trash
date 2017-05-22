@@ -47,6 +47,9 @@ public class PlayerController : NetworkBehaviour {
 		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
 		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
 
+		if (!content)
+			return;
+		
 		float SIZE_ITEM = 1.5f;
 		// Remove all raws
 		var children = new List<GameObject>();
