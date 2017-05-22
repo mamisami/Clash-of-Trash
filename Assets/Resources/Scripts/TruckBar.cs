@@ -22,8 +22,6 @@ public class TruckBar : NetworkBehaviour {
 	GameObject trashSlot1; //The one is for local user
 	GameObject trashSlot2; //The other for the adversary or the second on single player mode
 
-	int indexTrash = 1;
-
 	float timeFactoryToTrash = Global.TRUCK_BAR_TIME_TO_FACTORY;
 
 	void setControllers() {

@@ -4,7 +4,7 @@ using UnityEngine;
 public static class Global
 {
 	public static bool isSinglePlayer = true;
-	public static int level = 2;
+	public static int level = 1;
 
 	public const int GOOD_CLASSIFICATION_SCORE = 10;
 	public const int FALSE_CLASSIFICATION_SCORE = -5;
@@ -16,9 +16,9 @@ public static class Global
 	public static string WASTES_PATH = "Prefabs/Wastes";
 
 	public static Vector3[] draggablesCoordinates = new [] { 
-		new Vector3(-2.607f,17.70f), new Vector3(-1.507f,17.70f), new Vector3(-0.477f,17.70f), new Vector3(0.623f,17.70f), new Vector3(1.633f,17.70f), new Vector3(2.633f,17.70f),
-		new Vector3(-2.607f,19.20f), new Vector3(-1.507f,19.20f), new Vector3(-0.477f,19.20f), new Vector3(0.623f,19.20f), new Vector3(1.633f,19.20f), new Vector3(2.633f,19.20f),
-		new Vector3(-2.607f,20.70f), new Vector3(-1.507f,20.70f), new Vector3(-0.477f,20.70f), new Vector3(0.623f,20.70f), new Vector3(1.633f,20.70f), new Vector3(2.633f,20.70f),
-		new Vector3(-2.607f,22.20f), new Vector3(-1.507f,22.20f), new Vector3(-0.477f,22.20f), new Vector3(0.623f,22.20f), new Vector3(1.633f,22.20f), new Vector3(2.633f,22.20f),
-		new Vector3(-2.607f,23.70f), new Vector3(-1.507f,23.70f), new Vector3(-0.477f,23.70f), new Vector3(0.623f,23.70f), new Vector3(1.633f,23.70f), new Vector3(2.633f,23.70f) };
+		new Vector3(-2.607f,18.20f), new Vector3(-1.507f,18.20f), new Vector3(-0.477f,18.20f), new Vector3(0.623f,18.20f), new Vector3(1.633f,18.20f), new Vector3(2.633f,18.20f),
+		new Vector3(-2.607f,19.70f), new Vector3(-1.507f,19.70f), new Vector3(-0.477f,19.70f), new Vector3(0.623f,19.70f), new Vector3(1.633f,19.70f), new Vector3(2.633f,19.70f),
+		new Vector3(-2.607f,21.20f), new Vector3(-1.507f,21.20f), new Vector3(-0.477f,21.20f), new Vector3(0.623f,21.20f), new Vector3(1.633f,21.20f), new Vector3(2.633f,21.20f),
+		new Vector3(-2.607f,22.70f), new Vector3(-1.507f,22.70f), new Vector3(-0.477f,22.70f), new Vector3(0.623f,22.70f), new Vector3(1.633f,22.70f), new Vector3(2.633f,22.70f),
+		new Vector3(-2.607f,24.20f), new Vector3(-1.507f,24.20f), new Vector3(-0.477f,24.20f), new Vector3(0.623f,24.20f), new Vector3(1.633f,24.20f), new Vector3(2.633f,24.20f) };
 }
