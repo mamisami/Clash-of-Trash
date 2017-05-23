@@ -9,14 +9,17 @@ public class CountdownTimer : MonoBehaviour {
 	void Start () {
 		text = GetComponent<Text> ();
 		scale = transform.localScale;
+		soundManager = GameObject.Find ("Music").GetComponent<SoundManager> ();
 	}
 
-
+	SoundManager soundManager;
 	Text text;
 
 	public float timeLeft = /*60*2*/6;
 	public Color blink1 = Color.red;
 	public Color blink2 = Color.yellow;
+
+
 
 	Vector2 scale;
 	void Update()
@@ -25,32 +28,42 @@ public class CountdownTimer : MonoBehaviour {
 		timeLeft -= Time.deltaTime;
 		if (check (0, oldTimeLeft)) {
 			TimeFinish ();
+			//MakeSound ("Music/Alarm", 1.0f);
 		} else if (check (1, oldTimeLeft)) {
 			setColor (blink2);
 			growDown();
+			MakeSound ("Music/Alarm", 1.0f);
 		} else if (check (2, oldTimeLeft)) {
 			setColor (blink1);
 			growDown ();
+			MakeSound ("Music/Alarm", 1.0f);
 		}
 		else if (check (3, oldTimeLeft)) {
 			setColor (blink2);
 			growDown ();
+			MakeSound ("Music/Alarm", 1.0f);
 		}else if (check (4, oldTimeLeft)) {
 			setColor (blink1);
 			growDown();
+			MakeSound ("Music/Alarm", 1.0f);
 		}else if (check (5, oldTimeLeft)) {
 			setColor (blink2);
 			growDown ();
+			MakeSound ("Music/Alarm", 1.0f);
 		}
 		else {
 			// GrowDown all 10 seconds
 			for(int i = 10; i<oldTimeLeft;i+=10){
 				if (check (i + 1, oldTimeLeft)) {
 					growDown ();
+					soundManager.SpeedUp (0.01f);
 				}					
 			}
 		}
 
+		if(check(11, oldTimeLeft))
+			soundManager.SpeedUp (0.5f);
+		
 		// Rotate
 		for(int i = 1; i<oldTimeLeft;i++){
 			if (check (i + 1, oldTimeLeft)) {
@@ -67,6 +80,17 @@ public class CountdownTimer : MonoBehaviour {
 
 	void setColor(Color c){
 		text.color = c;
+	}
+
+	public void MakeSound(string resource, float volume, float time=0.0f){
+		//play sound and destroy audio source
+		AudioClip myClip = Resources.Load<AudioClip>(resource);
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		audioSource.clip = myClip;
+		audioSource.time = time;
+		audioSource.volume = volume;
+		audioSource.Play();
+		Destroy(audioSource, myClip.length);
 	}
 
 	void growDown(){

@@ -93,6 +93,10 @@ public class Trash : MonoBehaviour {
 
 	public void MakePopScoreGood(int score){
 		MakePopText("+"+score, colorGoodText);
+	
+		//play sound and destroy audio source
+		MakeSound ("Music/WasteNoise", 1.0f, 0.2f);
+		MakeSound("Music/GoodPoint", 1.0f);
 	}
 
 	public void MakePopScoreBad(int score){
@@ -100,6 +104,21 @@ public class Trash : MonoBehaviour {
 		if (score < 0)
 			prefix = "";
 		MakePopText(prefix+score, colorBadText);
+
+		//play sound and destroy audio source
+		MakeSound ("Music/WasteNoise", 1.0f, 0.2f);
+		MakeSound("Music/BadPoint", 0.3f);
+	}
+
+	public void MakeSound(string resource, float volume, float time=0.0f){
+		//play sound and destroy audio source
+		AudioClip myClip = Resources.Load<AudioClip>(resource);
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		audioSource.clip = myClip;
+		audioSource.time = time;
+		audioSource.volume = volume;
+		audioSource.Play();
+		Destroy(audioSource, myClip.length);
 	}
 
 	void OnMouseDown(){

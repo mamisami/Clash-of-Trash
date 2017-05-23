@@ -128,6 +128,14 @@ public class TruckBar : NetworkBehaviour {
 			"oncompletetarget" , this.gameObject,
 			"oncomplete", "MoveTruckToTrash"));
 		iTween.RotateTo(truck,  iTween.Hash("y", 180f,"time",1f,"easetype", iTween.EaseType.linear));
+
+		//play sound and destroy audio source
+		AudioClip myClip = Resources.Load<AudioClip>("Music/TruckSound");
+		AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+		audioSource.clip = myClip;
+		audioSource.volume = 0.2f;
+		audioSource.Play();
+		Destroy(audioSource, myClip.length);
 	}
 
 	public void Open() {
