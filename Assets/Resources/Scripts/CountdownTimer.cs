@@ -15,7 +15,7 @@ public class CountdownTimer : MonoBehaviour {
 	SoundManager soundManager;
 	Text text;
 
-	public float timeLeft = /*60*2*/6;
+	private float timeLeft = Global.GAME_TIME;
 	public Color blink1 = Color.red;
 	public Color blink2 = Color.yellow;
 

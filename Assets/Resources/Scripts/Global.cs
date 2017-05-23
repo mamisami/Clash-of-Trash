@@ -6,8 +6,10 @@ public static class Global
 	public static bool isSinglePlayer = true;
 	public static int level = 1;
 
-	public const int GOOD_CLASSIFICATION_SCORE = 10;
-	public const int FALSE_CLASSIFICATION_SCORE = -5;
+	public const float GAME_TIME = 120.0f;
+
+	public const float SPAWN_TIME_MIN = 0.0f;
+	public const float SPAWN_TIME_MAX = 15.0f;
 
 	public const float TRUCK_BAR_TIME_TO_FACTORY = 10f; // In seconds
 
