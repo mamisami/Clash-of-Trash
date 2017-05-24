@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 
 public class SpawnManager : NetworkBehaviour {
 	float time = 0.0f;
+	float timeOffset = 1.0f;
 
 	//int draggableID = 0;
 	public GameObject[] draggables;
@@ -33,10 +34,14 @@ public class SpawnManager : NetworkBehaviour {
 	void Update () {
 		time += Time.deltaTime;
 
-		for (int i = 0; i < draggablesSpawnTime.Length; i++) {
-			if (draggablesSpawnTime[i] != -1.0) {
-				if (draggablesSpawnTime[i] < time)
-					makeSpawn(i);
+		if (time > timeOffset) {
+			timeOffset++;
+
+			for (int i = 0; i < draggablesSpawnTime.Length; i++) {
+				if (draggablesSpawnTime[i] != -1.0) {
+					if (draggablesSpawnTime[i] < time)
+						makeSpawn(i);
+				}
 			}
 		}
 	}
