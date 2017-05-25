@@ -28,6 +28,11 @@ public class Trash : MonoBehaviour {
 
 	bool isInTruckBar = false;
 
+	// Use this for initialization
+    void Start () {
+		draggable = Global.level == 2;
+    }
+
 	void Awake(){
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteTrashClose = Resources.Load<Sprite> 

@@ -9,6 +9,10 @@ using UnityEngine.Assertions;
 public class CoT_NetworkManager : NetworkManager {
 	public NetworkDiscovery discovery;
 
+	public CountdownTimer timer;
+
+	public Text txtAdvSearch;
+
 	private int countPlayers = 0;
 	//public GameObject playerPrefab;
 
@@ -46,7 +50,20 @@ public class CoT_NetworkManager : NetworkManager {
 				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 24.30f, 0f), Quaternion.identity) as GameObject;
 				NetworkServer.Spawn (truckBarObject);
 			}
+
+			startGame();
 		}
+	}
+
+	private void startGame() {
+		txtAdvSearch.enabled = false;
+		timer.isStart = true;
+	}
+
+	public void OnClientConnect(NetworkConnection conn) {
+		base.OnClientConnect (conn);
+
+		startGame();
 	}
 
 	public override void OnStartHost()
@@ -73,6 +90,10 @@ public class CoT_NetworkManager : NetworkManager {
 		GameObject spawnManager = GameObject.FindWithTag ("SpawnManager");
 		if (spawnManager)
 			Destroy (spawnManager);
+
+		GameObject networkDiscovery = GameObject.FindWithTag ("NetworkDiscovery");
+		if (networkDiscovery)
+			Destroy (networkDiscovery);
 
 		this.maxConnections = 2; 
 

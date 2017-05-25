@@ -19,57 +19,59 @@ public class CountdownTimer : MonoBehaviour {
 	public Color blink1 = Color.red;
 	public Color blink2 = Color.yellow;
 
-
+	public bool isStart = false;
 
 	Vector2 scale;
 	void Update()
 	{
-		float oldTimeLeft = timeLeft;
-		timeLeft -= Time.deltaTime;
-		if (check (0, oldTimeLeft)) {
-			TimeFinish ();
-			//MakeSound ("Music/Alarm", 1.0f);
-		} else if (check (1, oldTimeLeft)) {
-			setColor (blink2);
-			growDown();
-			MakeSound ("Music/Alarm", 1.0f);
-		} else if (check (2, oldTimeLeft)) {
-			setColor (blink1);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}
-		else if (check (3, oldTimeLeft)) {
-			setColor (blink2);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}else if (check (4, oldTimeLeft)) {
-			setColor (blink1);
-			growDown();
-			MakeSound ("Music/Alarm", 1.0f);
-		}else if (check (5, oldTimeLeft)) {
-			setColor (blink2);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}
-		else {
-			// GrowDown all 10 seconds
-			for(int i = 10; i<oldTimeLeft;i+=10){
-				if (check (i + 1, oldTimeLeft)) {
-					growDown ();
-					soundManager.SpeedUp (0.01f);
-				}					
+		if (isStart) {
+			float oldTimeLeft = timeLeft;
+			timeLeft -= Time.deltaTime;
+			if (check (0, oldTimeLeft)) {
+				TimeFinish ();
+				//MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (1, oldTimeLeft)) {
+				setColor (blink2);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (2, oldTimeLeft)) {
+				setColor (blink1);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
 			}
-		}
+			else if (check (3, oldTimeLeft)) {
+				setColor (blink2);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
+			}else if (check (4, oldTimeLeft)) {
+				setColor (blink1);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			}else if (check (5, oldTimeLeft)) {
+				setColor (blink2);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
+			}
+			else {
+				// GrowDown all 10 seconds
+				for(int i = 10; i<oldTimeLeft;i+=10){
+					if (check (i + 1, oldTimeLeft)) {
+						growDown ();
+						soundManager.SpeedUp (0.01f);
+					}					
+				}
+			}
 
-		if(check(11, oldTimeLeft))
-			soundManager.SpeedUp (0.5f);
-		
-		// Rotate
-		for(int i = 1; i<oldTimeLeft;i++){
-			if (check (i + 1, oldTimeLeft)) {
-				float z = 5;
-				iTween.RotateTo(gameObject, iTween.Hash("z",(i % 2 == 0) ? z : -z,"time",1f,"easetype", iTween.EaseType.easeOutQuart));
-				break;
+			if(check(11, oldTimeLeft))
+				soundManager.SpeedUp (0.5f);
+			
+			// Rotate
+			for(int i = 1; i<oldTimeLeft;i++){
+				if (check (i + 1, oldTimeLeft)) {
+					float z = 5;
+					iTween.RotateTo(gameObject, iTween.Hash("z",(i % 2 == 0) ? z : -z,"time",1f,"easetype", iTween.EaseType.easeOutQuart));
+					break;
+				}
 			}
 		}
 	}
