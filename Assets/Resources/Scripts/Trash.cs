@@ -46,6 +46,7 @@ public class Trash : MonoBehaviour {
 		//draggable = Global.level == 2;
 
 		trashEmptyClone = Instantiate (trashEmpty, transform.position, transform.rotation) as GameObject;
+		trashEmptyClone.GetComponent<SpriteRenderer>().sortingOrder = -2;
 		trashEmptyClone.transform.localScale = transform.localScale;
 		//trashEmptyClone.GetComponent<Renderer>().enabled = false;
 		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.2f,"easetype", iTween.EaseType.linear));
