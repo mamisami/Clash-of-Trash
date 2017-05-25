@@ -38,7 +38,9 @@ public class ButtonMenu : MonoBehaviour {
     {
 		Global.level = numLevel;
 
-        imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+numLevel);
-        txtLvl.text = "Level " + numLevel;
+        //imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+numLevel);
+        //txtLvl.text = "Level " + numLevel;
+
+		LoadGame();
     }
 }
