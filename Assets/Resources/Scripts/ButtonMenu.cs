@@ -43,4 +43,13 @@ public class ButtonMenu : MonoBehaviour {
 
 		LoadGame();
     }
+
+	public void playTutorial() {
+		StartCoroutine(playTutorialRoutine());
+	}
+
+	public IEnumerator playTutorialRoutine() {
+		Handheld.PlayFullScreenMovie("http://minelli.me/tuto.mp4", Color.black, FullScreenMovieControlMode.Full, FullScreenMovieScalingMode.None);
+		yield return new WaitForEndOfFrame();
+	}
 }
