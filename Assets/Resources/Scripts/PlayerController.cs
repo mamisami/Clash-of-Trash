@@ -114,6 +114,8 @@ public class PlayerController : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
+
+		OnScoreChange(0);
 	}
 
 	override public void OnStartLocalPlayer() {
@@ -145,7 +147,7 @@ public class PlayerController : NetworkBehaviour {
 		if (Global.isSinglePlayer)
 			txtScore.text = "    " + localPlayerScore + " pts ";
 		else
-			txtScore.text = "You : " + localPlayerScore + "pts\nAdv : " + adversaryScore + " pts ";
+			txtScore.text = "Toi : " + localPlayerScore + "pts\nAdv : " + adversaryScore + " pts ";
 	}
 
 
