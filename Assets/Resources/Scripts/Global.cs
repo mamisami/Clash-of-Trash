@@ -6,7 +6,7 @@ public static class Global
 	public static bool isSinglePlayer = true;
 	public static bool isStart = false;
 	public static bool reloadGame = false;
-	public static int level = 1;
+	public static int level = 2;
 
 	public const float GAME_TIME = 10.0f;
 

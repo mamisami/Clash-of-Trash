@@ -124,6 +124,10 @@ public class CountdownTimer : MonoBehaviour {
 		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
 		spawn.GetComponent<SpawnManager> ().HideAll ();
 
+		GameObject truckBar = GameObject.FindWithTag ("TruckBar");
+		if (truckBar)
+			Destroy (truckBar);
+
 		//Show menu
 		Vector3 pos = pauseMenu.transform.position;
 		pauseMenu.SetActive (true);
