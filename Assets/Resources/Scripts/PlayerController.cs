@@ -146,9 +146,9 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		if (Global.isSinglePlayer)
-			txtScore.text = "Your score : " + localPlayerScore + "pts";
+			txtScore.text = "    " + localPlayerScore + " pts ";
 		else
-			txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
+			txtScore.text = "You : " + localPlayerScore + "pts\nAdv : " + adversaryScore + " pts ";
 	}
 
 
