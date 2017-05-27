@@ -15,7 +15,6 @@ public class CountdownTimer : MonoBehaviour {
 		pauseMenu = GameObject.Find ("/Canvas/Pause");		
 		//pauseMenu.transform.position.y += 200f;
 		pauseMenu.SetActive (false);
-		Global.isFinish = false;
 	}
 
 	SoundManager soundManager;
@@ -25,35 +24,37 @@ public class CountdownTimer : MonoBehaviour {
 	public Color blink1 = Color.red;
 	public Color blink2 = Color.yellow;
 
-	public bool isStart = false;
-
 	Vector2 scale;
 	void Update()
 	{
-		if (isStart) {
+		text.enabled = Global.isStart;
+
+		if (Global.isStart) {
 			float oldTimeLeft = timeLeft;
 			timeLeft -= Time.deltaTime;
 			if (check (0, oldTimeLeft)) {
 				TimeFinish ();
-				//MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (1, oldTimeLeft)) {
-				setColor (blink2);
+				setColor (blink1);
 				growDown();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (2, oldTimeLeft)) {
+				setColor (blink2);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (3, oldTimeLeft)) {
 				setColor (blink1);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
-			}
-			else if (check (3, oldTimeLeft)) {
+			} else if (check (4, oldTimeLeft)) {
 				setColor (blink2);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
-			}else if (check (4, oldTimeLeft)) {
+			} else if (check (5, oldTimeLeft)) {
 				setColor (blink1);
 				growDown();
 				MakeSound ("Music/Alarm", 1.0f);
-			}else if (check (5, oldTimeLeft)) {
+			} else if (check (6, oldTimeLeft)) {
 				setColor (blink2);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
@@ -118,7 +119,7 @@ public class CountdownTimer : MonoBehaviour {
 	}
 
 	void TimeFinish(){
-		Global.isFinish = true;
+		Global.isStart = false;
 
 		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
 		spawn.GetComponent<SpawnManager> ().HideAll ();

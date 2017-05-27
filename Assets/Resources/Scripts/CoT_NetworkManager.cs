@@ -59,7 +59,7 @@ public class CoT_NetworkManager : NetworkManager {
 
 	private void startGame() {
 		txtAdvSearch.enabled = false;
-		timer.isStart = true;
+		Global.isStart = true;
 	}
 
 	public override void OnClientConnect(NetworkConnection conn) {
@@ -90,6 +90,8 @@ public class CoT_NetworkManager : NetworkManager {
 	}
 
 	private void clearGame() {
+		Global.isStart = false;
+		
 		GameObject spawnManager = GameObject.FindWithTag ("SpawnManager");
 		if (spawnManager)
 			Destroy (spawnManager);

@@ -59,6 +59,11 @@ public class Trash : MonoBehaviour {
 
 	}
 
+	void Update()
+	{
+		GetComponent<Renderer>().enabled = Global.isStart;
+	}
+
 	public void Open(){
 		if(!moving)
 			spriteRenderer.sprite = spriteTrashOpen;

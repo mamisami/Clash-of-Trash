@@ -4,7 +4,7 @@ using UnityEngine;
 public static class Global
 {
 	public static bool isSinglePlayer = true;
-	public static bool isFinish = false;
+	public static bool isStart = false;
 	public static int level = 1;
 
 	public const float GAME_TIME = 90.0f;

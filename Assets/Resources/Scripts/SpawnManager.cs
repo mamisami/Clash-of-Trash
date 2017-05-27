@@ -39,7 +39,7 @@ public class SpawnManager : NetworkBehaviour {
 
 			for (int i = 0; i < draggablesSpawnTime.Length; i++) {
 				if (draggablesSpawnTime[i] != -1.0) {
-					if (draggablesSpawnTime[i] < time && !Global.isFinish)
+					if (draggablesSpawnTime[i] < time && Global.isStart)
 						makeSpawn(i);
 				}
 			}
