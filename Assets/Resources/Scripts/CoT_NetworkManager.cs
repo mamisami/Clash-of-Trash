@@ -13,6 +13,8 @@ public class CoT_NetworkManager : NetworkManager {
 
 	public Text txtAdvSearch;
 
+	public bool isServer = false;
+
 	private int countPlayers = 0;
 	//public GameObject playerPrefab;
 
@@ -60,10 +62,11 @@ public class CoT_NetworkManager : NetworkManager {
 		timer.isStart = true;
 	}
 
-	public void OnClientConnect(NetworkConnection conn) {
+	public override void OnClientConnect(NetworkConnection conn) {
 		base.OnClientConnect (conn);
 
-		startGame();
+		if (!isServer)
+			startGame();
 	}
 
 	public override void OnStartHost()

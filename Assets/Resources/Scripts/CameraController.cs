@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour {
 	public NetworkDiscovery discovery;
-	public NetworkManager manager;
+	public CoT_NetworkManager manager;
 
 	public Image imgLvl;
 
@@ -19,8 +19,8 @@ public class CameraController : MonoBehaviour {
 	void Start () {
 		imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+Global.level);
 
-		if (Global.level == 2)
-			txtTimer.color = Color.grey;
+		//if (Global.level == 2)
+		txtTimer.color = Color.grey;
 
 		if (Global.isSinglePlayer) {
 			NetworkManager.singleton.StartHost ();
@@ -40,6 +40,7 @@ public class CameraController : MonoBehaviour {
 
 				if (!manager.isNetworkActive) {
 					discovery.StopBroadcast ();
+					manager.isServer = true;
 					manager.StartHost ();
 				}
 			}
