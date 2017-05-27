@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,7 +11,11 @@ public class ButtonMenu : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		
+		if (Global.reloadGame == true) {
+			Global.reloadGame = false;
+
+			LoadGame();
+		}
     }
 	
     // Update is called once per frame
@@ -43,6 +48,15 @@ public class ButtonMenu : MonoBehaviour {
 
 		LoadGame();
     }
+
+	public void EndGame(bool replay) {
+		Global.reloadGame = replay;
+
+		if (NetworkManager.singleton.isNetworkActive) {
+			NetworkManager.singleton.StopServer();
+			NetworkManager.singleton.StopClient();
+		}
+	}
 
 	public void playTutorial() {
 		StartCoroutine(playTutorialRoutine());

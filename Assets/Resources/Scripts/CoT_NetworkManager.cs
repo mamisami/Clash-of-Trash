@@ -78,32 +78,40 @@ public class CoT_NetworkManager : NetworkManager {
 	}
 
 	public override void OnStopClient() {
+		base.OnStopClient ();
+
 		clearGame ();
 	}
 
 	public override void OnStopHost() {
+		base.OnStopHost ();
+
 		clearGame ();
 	}
 
 	public override void OnStopServer() {
+		base.OnStopServer ();
+
 		clearGame ();
 	}
 
 	private void clearGame() {
 		Global.isStart = false;
-		
+		this.maxConnections = 2; 
+		countPlayers = 0;
+
 		GameObject spawnManager = GameObject.FindWithTag ("SpawnManager");
 		if (spawnManager)
 			Destroy (spawnManager);
 
 		GameObject networkDiscovery = GameObject.FindWithTag ("NetworkDiscovery");
-		if (networkDiscovery)
+		if (networkDiscovery) {
+			try {
+				networkDiscovery.GetComponent<CoT_NetworkDiscovery>().StopBroadcast();
+			} catch {}
+
 			Destroy (networkDiscovery);
-
-		this.maxConnections = 2; 
-
-		//this.StopHost ();
-		countPlayers = 0;
+		}
 
 		SceneManager.LoadScene("Menu");
 	}
