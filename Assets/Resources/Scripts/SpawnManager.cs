@@ -17,7 +17,7 @@ public class SpawnManager : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		int nbDragabbles = Global.draggablesCoordinates.Length - (Global.level==2 ? 6 : 0);
+		int nbDragabbles = Global.draggablesCoordinates.Length;// - (Global.level==2 ? 6 : 0);
 
 		draggables = new GameObject[Global.draggablesCoordinates.Length];
 		draggablesSpawnTime = new double[nbDragabbles];

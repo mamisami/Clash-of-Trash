@@ -49,7 +49,7 @@ public class CoT_NetworkManager : NetworkManager {
 
 			if (Global.level == 2) {
 				Object truckBarPrefab = Resources.Load ("Prefabs/TruckBar", typeof(GameObject));
-				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 24.30f, 0f), Quaternion.identity) as GameObject;
+				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 23.90f, 0f), Quaternion.identity) as GameObject;
 				NetworkServer.Spawn (truckBarObject);
 			}
 

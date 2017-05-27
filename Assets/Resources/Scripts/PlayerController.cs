@@ -129,7 +129,7 @@ public class PlayerController : NetworkBehaviour {
 
 	void OnScoreChange(int value) {
 		int localPlayerScore;
-		int adversaryScore = 0;;
+		int adversaryScore = 0;
 
 		if (NetworkManager.singleton.IsClientConnected ())
 			score = value;
@@ -145,9 +145,9 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		if (Global.isSinglePlayer)
-			txtScore.text = "    " + localPlayerScore + " pts ";
+			txtScore.text = "    " + localPlayerScore + " pts";
 		else
-			txtScore.text = "Toi : " + localPlayerScore + "pts\nAdv : " + adversaryScore + " pts ";
+			txtScore.text = "Toi : " + localPlayerScore + " pts\nAdv : " + adversaryScore + " pts";
 	}
 
 

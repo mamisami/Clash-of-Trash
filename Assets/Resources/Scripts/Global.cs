@@ -7,7 +7,7 @@ public static class Global
 	public static bool isFinish = false;
 	public static int level = 1;
 
-	public const float GAME_TIME = 120.0f;
+	public const float GAME_TIME = 90.0f;
 
 	public const float SPAWN_TIME_MIN = 0.0f;
 	public const float SPAWN_TIME_MAX = 15.0f;
@@ -22,8 +22,7 @@ public static class Global
 		new Vector3(-2.107f,18.20f), new Vector3(-1.007f,18.20f), new Vector3(0.177f,18.20f), new Vector3(1.123f,18.20f), new Vector3(2.133f,18.20f),
 		new Vector3(-2.107f,19.70f), new Vector3(-1.007f,19.70f), new Vector3(0.177f,19.70f), new Vector3(1.123f,19.70f), new Vector3(2.133f,19.70f),
 		new Vector3(-2.107f,21.20f), new Vector3(-1.007f,21.20f), new Vector3(0.177f,21.20f), new Vector3(1.123f,21.20f), new Vector3(2.133f,21.20f),
-		new Vector3(-2.107f,22.70f), new Vector3(-1.007f,22.70f), new Vector3(0.177f,22.70f), new Vector3(1.123f,22.70f), new Vector3(2.133f,22.70f),
-		new Vector3(-2.107f,24.20f), new Vector3(-1.007f,24.20f), new Vector3(0.177f,24.20f), new Vector3(1.123f,24.20f), new Vector3(2.133f,24.20f) };
+		new Vector3(-2.107f,22.70f), new Vector3(-1.007f,22.70f), new Vector3(0.177f,22.70f), new Vector3(1.123f,22.70f), new Vector3(2.133f,22.70f) };
 
 	/*
 	public static Vector3[] draggablesCoordinates = new [] { 
