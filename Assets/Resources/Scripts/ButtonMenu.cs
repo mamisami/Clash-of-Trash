@@ -49,7 +49,7 @@ public class ButtonMenu : MonoBehaviour {
 	}
 
 	public IEnumerator playTutorialRoutine() {
-		Handheld.PlayFullScreenMovie("http://minelli.me/tuto.mp4", Color.black, FullScreenMovieControlMode.Full, FullScreenMovieScalingMode.None);
+		Handheld.PlayFullScreenMovie("tuto.mp4", Color.black, FullScreenMovieControlMode.Full, FullScreenMovieScalingMode.AspectFit);
 		yield return new WaitForEndOfFrame();
 	}
 }
