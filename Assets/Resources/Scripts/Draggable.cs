@@ -186,4 +186,8 @@ public class Draggable : NetworkBehaviour {
 		player.CmdAddWaste (trash.trashType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
+
+	void Hide(){
+
+	}
 }

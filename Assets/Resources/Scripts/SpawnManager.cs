@@ -39,7 +39,7 @@ public class SpawnManager : NetworkBehaviour {
 
 			for (int i = 0; i < draggablesSpawnTime.Length; i++) {
 				if (draggablesSpawnTime[i] != -1.0) {
-					if (draggablesSpawnTime[i] < time)
+					if (draggablesSpawnTime[i] < time && !Global.isFinish)
 						makeSpawn(i);
 				}
 			}
@@ -60,5 +60,12 @@ public class SpawnManager : NetworkBehaviour {
 
 		draggables [draggableID] = draggableGameObject;
 		draggableGameObject.GetComponent<Draggable> ().realName = draggableID.ToString();
+	}
+
+	public void HideAll(){
+		for (int i = 0; i < draggables.Length; i++)
+			if (draggables [i]) {
+				iTween.ScaleTo (draggables [i], iTween.Hash ("scale", new Vector3 (0.0f, 0.0f, 0.0f), "time", 0.2f, "easetype", iTween.EaseType.easeInBounce));
+			}
 	}
 }

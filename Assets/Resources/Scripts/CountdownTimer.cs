@@ -5,11 +5,17 @@ using UnityEngine.UI;
 
 public class CountdownTimer : MonoBehaviour {
 
+	GameObject pauseMenu;
+
 	// Use this for initialization
 	void Start () {
 		text = GetComponent<Text> ();
 		scale = transform.localScale;
 		soundManager = GameObject.Find ("Music").GetComponent<SoundManager> ();
+		pauseMenu = GameObject.Find ("/Canvas/Pause");		
+		//pauseMenu.transform.position.y += 200f;
+		pauseMenu.SetActive (false);
+		Global.isFinish = false;
 	}
 
 	SoundManager soundManager;
@@ -112,7 +118,26 @@ public class CountdownTimer : MonoBehaviour {
 	}
 
 	void TimeFinish(){
-		// TODO: STOP all
+		Global.isFinish = true;
+
+		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
+		spawn.GetComponent<SpawnManager> ().HideAll ();
+
+		//Show menu
+		Vector3 pos = pauseMenu.transform.position;
+		pauseMenu.SetActive (true);
+		float valStart = 50f;
+		pos.y += valStart;
+		pauseMenu.transform.position = pos;
+		iTween.MoveTo (pauseMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 1f, "easetype", iTween.EaseType.easeOutBounce));
+	
+		PlayerController player;
+		GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
+		if (localPlayerObject != null) {
+			player = localPlayerObject.GetComponent<PlayerController> ();
+			player.generateExplanationScrollView ();
+		}
+	
 	}
 
 	void OnGUI(){
