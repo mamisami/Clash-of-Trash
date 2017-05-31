@@ -43,22 +43,22 @@ public class PlayerController : NetworkBehaviour {
 	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
 
 	public void generateExplanationScrollView(){
-		GameObject content = GameObject.Find("/Canvas/Scroll View/Viewport/Content");
+		GameObject content = GameObject.Find("/Canvas/Pause/Scroll View/Viewport/Content");
 		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
 		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
 
 		if (!content)
 			return;
 		
-		float SIZE_ITEM = 1.5f;
 		// Remove all raws
 		var children = new List<GameObject>();
 		foreach (Transform child in content.transform) children.Add(child.gameObject);
 		children.ForEach(child => Destroy(child));
 
 		Vector2 sd = content.GetComponent<RectTransform> ().sizeDelta;
-		sd.y = 75 * explanations.Count;
-
+		float rowHeight = goodRow.transform.GetComponent<RectTransform> ().sizeDelta.y*goodRow.transform.localScale.y;
+		sd.y = rowHeight * explanations.Count + rowHeight / 4;
+		content.GetComponent<RectTransform> ().sizeDelta = sd;
 		int i = 0;
 
 		foreach (KeyValuePair<string, Explanation> explKeyVal in explanations) {
@@ -66,10 +66,11 @@ public class PlayerController : NetworkBehaviour {
 			GameObject go = goodRow;
 			if (exp.isError)
 				go = badRow;
-
-			Vector3 pos = content.transform.position;
-			pos.y -= SIZE_ITEM*i-SIZE_ITEM/2;
-			GameObject row = Instantiate (go, pos, Quaternion.identity, content.transform);
+			
+			GameObject row = Instantiate (go, content.transform.position, Quaternion.identity, content.transform);
+			Vector3 locPos = row.transform.localPosition;
+			locPos.y -= rowHeight * i;
+			row.transform.localPosition = locPos;
 			row.transform.FindChild ("ImageWaste").GetComponent<Image>().sprite = 
 				Resources.Load<Sprite> ("Sprites/Waste/" + exp.waste);
 			row.transform.FindChild ("ImageTrash1").GetComponent<Image>().sprite = 
@@ -81,8 +82,6 @@ public class PlayerController : NetworkBehaviour {
 
 			i++;
 		}
-
-		content.GetComponent<RectTransform> ().sizeDelta = sd;
 	}
 
 	private Sprite stringTrashToSprite(string str){
@@ -95,9 +94,7 @@ public class PlayerController : NetworkBehaviour {
 		foreach (KeyValuePair<string, Explanation> expl in explanations) {
 			Debug.Log (expl.Key);
 		}
-
-		// TODO: remove that and call only at the end
-		generateExplanationScrollView ();
+		//generateExplanationScrollView ();
 	}
 
 	public void setManagers() {
@@ -117,6 +114,8 @@ public class PlayerController : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
+
+		OnScoreChange(0);
 	}
 
 	override public void OnStartLocalPlayer() {
@@ -130,7 +129,7 @@ public class PlayerController : NetworkBehaviour {
 
 	void OnScoreChange(int value) {
 		int localPlayerScore;
-		int adversaryScore = 0;;
+		int adversaryScore = 0;
 
 		if (NetworkManager.singleton.IsClientConnected ())
 			score = value;
@@ -146,9 +145,9 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		if (Global.isSinglePlayer)
-			txtScore.text = "Your score : " + localPlayerScore + "pts";
+			txtScore.text = "    " + localPlayerScore + " pts";
 		else
-			txtScore.text = "Your score : " + localPlayerScore + "pts\nAdversary  : " + adversaryScore + "pts";
+			txtScore.text = "Toi : " + localPlayerScore + " pts\nAdv : " + adversaryScore + " pts";
 	}
 
 
@@ -219,5 +218,10 @@ public class PlayerController : NetworkBehaviour {
 
 		trash.ShowEmptyTrash();
 		truckBar.AddTrash(trashObject, trash, 2);
+	}
+
+	public void StopAll(){
+
+
 	}
 }

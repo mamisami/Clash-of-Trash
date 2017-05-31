@@ -5,11 +5,16 @@ using UnityEngine.UI;
 
 public class CountdownTimer : MonoBehaviour {
 
+	GameObject pauseMenu;
+
 	// Use this for initialization
 	void Start () {
 		text = GetComponent<Text> ();
 		scale = transform.localScale;
 		soundManager = GameObject.Find ("Music").GetComponent<SoundManager> ();
+		pauseMenu = GameObject.Find ("/Canvas/Pause");		
+		//pauseMenu.transform.position.y += 200f;
+		pauseMenu.SetActive (false);
 	}
 
 	SoundManager soundManager;
@@ -19,57 +24,61 @@ public class CountdownTimer : MonoBehaviour {
 	public Color blink1 = Color.red;
 	public Color blink2 = Color.yellow;
 
-
-
 	Vector2 scale;
 	void Update()
 	{
-		float oldTimeLeft = timeLeft;
-		timeLeft -= Time.deltaTime;
-		if (check (0, oldTimeLeft)) {
-			TimeFinish ();
-			//MakeSound ("Music/Alarm", 1.0f);
-		} else if (check (1, oldTimeLeft)) {
-			setColor (blink2);
-			growDown();
-			MakeSound ("Music/Alarm", 1.0f);
-		} else if (check (2, oldTimeLeft)) {
-			setColor (blink1);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}
-		else if (check (3, oldTimeLeft)) {
-			setColor (blink2);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}else if (check (4, oldTimeLeft)) {
-			setColor (blink1);
-			growDown();
-			MakeSound ("Music/Alarm", 1.0f);
-		}else if (check (5, oldTimeLeft)) {
-			setColor (blink2);
-			growDown ();
-			MakeSound ("Music/Alarm", 1.0f);
-		}
-		else {
-			// GrowDown all 10 seconds
-			for(int i = 10; i<oldTimeLeft;i+=10){
-				if (check (i + 1, oldTimeLeft)) {
-					growDown ();
-					soundManager.SpeedUp (0.01f);
-				}					
-			}
-		}
+		text.enabled = Global.isStart;
 
-		if(check(11, oldTimeLeft))
-			soundManager.SpeedUp (0.5f);
-		
-		// Rotate
-		for(int i = 1; i<oldTimeLeft;i++){
-			if (check (i + 1, oldTimeLeft)) {
-				float z = 5;
-				iTween.RotateTo(gameObject, iTween.Hash("z",(i % 2 == 0) ? z : -z,"time",1f,"easetype", iTween.EaseType.easeOutQuart));
-				break;
+		if (Global.isStart) {
+			float oldTimeLeft = timeLeft;
+			timeLeft -= Time.deltaTime;
+			if (check (0, oldTimeLeft)) {
+				TimeFinish ();
+			} else if (check (1, oldTimeLeft)) {
+				setColor (blink1);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (2, oldTimeLeft)) {
+				setColor (blink2);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (3, oldTimeLeft)) {
+				setColor (blink1);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (4, oldTimeLeft)) {
+				setColor (blink2);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (5, oldTimeLeft)) {
+				setColor (blink1);
+				growDown();
+				MakeSound ("Music/Alarm", 1.0f);
+			} else if (check (6, oldTimeLeft)) {
+				setColor (blink2);
+				growDown ();
+				MakeSound ("Music/Alarm", 1.0f);
+			}
+			else {
+				// GrowDown all 10 seconds
+				for(int i = 10; i<oldTimeLeft;i+=10){
+					if (check (i + 1, oldTimeLeft)) {
+						growDown ();
+						soundManager.SpeedUp (0.01f);
+					}					
+				}
+			}
+
+			if(check(11, oldTimeLeft))
+				soundManager.SpeedUp (0.5f);
+			
+			// Rotate
+			for(int i = 1; i<oldTimeLeft;i++){
+				if (check (i + 1, oldTimeLeft)) {
+					float z = 5;
+					iTween.RotateTo(gameObject, iTween.Hash("z",(i % 2 == 0) ? z : -z,"time",1f,"easetype", iTween.EaseType.easeOutQuart));
+					break;
+				}
 			}
 		}
 	}
@@ -110,7 +119,30 @@ public class CountdownTimer : MonoBehaviour {
 	}
 
 	void TimeFinish(){
-		// TODO: STOP all
+		Global.isStart = false;
+
+		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
+		spawn.GetComponent<SpawnManager> ().HideAll ();
+
+		GameObject truckBar = GameObject.FindWithTag ("TruckBar");
+		if (truckBar)
+			Destroy (truckBar);
+
+		//Show menu
+		Vector3 pos = pauseMenu.transform.position;
+		pauseMenu.SetActive (true);
+		float valStart = 50f;
+		pos.y += valStart;
+		pauseMenu.transform.position = pos;
+		iTween.MoveTo (pauseMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 1f, "easetype", iTween.EaseType.easeOutBounce));
+	
+		PlayerController player;
+		GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
+		if (localPlayerObject != null) {
+			player = localPlayerObject.GetComponent<PlayerController> ();
+			player.generateExplanationScrollView ();
+		}
+	
 	}
 
 	void OnGUI(){

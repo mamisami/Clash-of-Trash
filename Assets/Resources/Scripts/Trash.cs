@@ -28,6 +28,11 @@ public class Trash : MonoBehaviour {
 
 	bool isInTruckBar = false;
 
+	// Use this for initialization
+    void Start () {
+		draggable = Global.level == 2;
+    }
+
 	void Awake(){
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		spriteTrashClose = Resources.Load<Sprite> 
@@ -46,11 +51,17 @@ public class Trash : MonoBehaviour {
 		//draggable = Global.level == 2;
 
 		trashEmptyClone = Instantiate (trashEmpty, transform.position, transform.rotation) as GameObject;
+		trashEmptyClone.GetComponent<SpriteRenderer>().sortingOrder = -2;
 		trashEmptyClone.transform.localScale = transform.localScale;
 		//trashEmptyClone.GetComponent<Renderer>().enabled = false;
 		iTween.FadeTo(trashEmptyClone, iTween.Hash("alpha", 0f, "time",0.2f,"easetype", iTween.EaseType.linear));
 		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(startScale*0.5f, startScale*0.5f, startScale*0.5f), "time", 0.2f, "easetype", iTween.EaseType.easeOutBack));
 
+	}
+
+	void Update()
+	{
+		GetComponent<Renderer>().enabled = Global.isStart;
 	}
 
 	public void Open(){

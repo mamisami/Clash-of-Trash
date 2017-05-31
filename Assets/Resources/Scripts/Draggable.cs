@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
-using UnityEditor;
 
 
 [RequireComponent(typeof(BoxCollider))]
@@ -186,5 +185,9 @@ public class Draggable : NetworkBehaviour {
 		player.CmdAddPointToScore (pts);
 		player.CmdAddWaste (trash.trashType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
+	}
+
+	void Hide(){
+
 	}
 }

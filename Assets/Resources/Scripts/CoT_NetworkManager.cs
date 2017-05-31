@@ -9,6 +9,12 @@ using UnityEngine.Assertions;
 public class CoT_NetworkManager : NetworkManager {
 	public NetworkDiscovery discovery;
 
+	public CountdownTimer timer;
+
+	public Text txtAdvSearch;
+
+	public bool isServer = false;
+
 	private int countPlayers = 0;
 	//public GameObject playerPrefab;
 
@@ -43,10 +49,24 @@ public class CoT_NetworkManager : NetworkManager {
 
 			if (Global.level == 2) {
 				Object truckBarPrefab = Resources.Load ("Prefabs/TruckBar", typeof(GameObject));
-				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 24.30f, 0f), Quaternion.identity) as GameObject;
+				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 23.90f, 0f), Quaternion.identity) as GameObject;
 				NetworkServer.Spawn (truckBarObject);
 			}
+
+			startGame();
 		}
+	}
+
+	private void startGame() {
+		txtAdvSearch.enabled = false;
+		Global.isStart = true;
+	}
+
+	public override void OnClientConnect(NetworkConnection conn) {
+		base.OnClientConnect (conn);
+
+		if (!isServer)
+			startGame();
 	}
 
 	public override void OnStartHost()
@@ -58,26 +78,40 @@ public class CoT_NetworkManager : NetworkManager {
 	}
 
 	public override void OnStopClient() {
+		base.OnStopClient ();
+
 		clearGame ();
 	}
 
 	public override void OnStopHost() {
+		base.OnStopHost ();
+
 		clearGame ();
 	}
 
 	public override void OnStopServer() {
+		base.OnStopServer ();
+
 		clearGame ();
 	}
 
 	private void clearGame() {
+		Global.isStart = false;
+		this.maxConnections = 2; 
+		countPlayers = 0;
+
 		GameObject spawnManager = GameObject.FindWithTag ("SpawnManager");
 		if (spawnManager)
 			Destroy (spawnManager);
 
-		this.maxConnections = 2; 
+		GameObject networkDiscovery = GameObject.FindWithTag ("NetworkDiscovery");
+		if (networkDiscovery) {
+			try {
+				networkDiscovery.GetComponent<CoT_NetworkDiscovery>().StopBroadcast();
+			} catch {}
 
-		//this.StopHost ();
-		countPlayers = 0;
+			Destroy (networkDiscovery);
+		}
 
 		SceneManager.LoadScene("Menu");
 	}
