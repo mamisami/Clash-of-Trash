@@ -15,6 +15,7 @@ public class PlayerController : NetworkBehaviour {
 	GameObject truckBarTrash1;
 	GameObject truckBarTrash2;
 
+	public Trash trashToDrag;
 
 	public class Explanation {
 		public bool isError;

@@ -28,6 +28,8 @@ public class Trash : MonoBehaviour {
 
 	bool isInTruckBar = false;
 
+	PlayerController player;
+
 	// Use this for initialization
     void Start () {
 		draggable = Global.level == 2;
@@ -173,6 +175,37 @@ public class Trash : MonoBehaviour {
 		}
 	}
 
+	public void OnMouseEnter() {
+		Debug.Log ("OnMouseEnter");
+
+		this.Open ();
+		GetPlayer ().trashToDrag = this;
+	}
+
+	public void OnMouseExit() {
+		Debug.Log ("OnMouseExit");
+		GetPlayer ().trashToDrag = null;
+		this.Close ();
+	}
+
+	void OnTriggerEnter (Collider col)
+	{
+		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
+		if (truckbar && !this.truckbar) {
+			this.truckbar = truckbar;
+			this.truckbar.Open ();
+		}
+	}
+
+	void OnTriggerExit (Collider col)
+	{
+		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
+		if (truckbar && this.truckbar) {
+			this.truckbar.Close ();
+			this.truckbar = null;
+		}
+	}
+
 	public void ReplaceTrash(){
 		isInTruckBar = false;
 		GrowDown();
@@ -202,23 +235,7 @@ public class Trash : MonoBehaviour {
 		iTween.ScaleTo (trashEmptyClone, iTween.Hash ("scale", new Vector3(0.1f, 0.1f, 0.1f), "time", 0.3f, "easetype", iTween.EaseType.easeInOutBack));
 	}
 
-	void OnTriggerEnter (Collider col)
-	{
-		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
-		if (truckbar && !this.truckbar) {
-			this.truckbar = truckbar;
-			this.truckbar.Open ();
-		}
-	}
 
-	void OnTriggerExit (Collider col)
-	{
-		TruckBar truckbar = col.gameObject.GetComponent<TruckBar> ();
-		if (truckbar && this.truckbar) {
-			this.truckbar.Close ();
-			this.truckbar = null;
-		}
-	}
 		
 	public bool IsMoving(){
 		return moving;
@@ -227,4 +244,14 @@ public class Trash : MonoBehaviour {
 	public bool IsInTruckBar(){
 		return isInTruckBar;
 	}
+
+	PlayerController GetPlayer() {
+		if (player == null) {
+			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
+			if (localPlayerObject != null)
+				player = localPlayerObject.GetComponent<PlayerController> ();
+		}
+		return player;
+	}
+
 }
