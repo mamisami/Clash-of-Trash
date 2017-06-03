@@ -13,7 +13,6 @@ public class CountdownTimer : MonoBehaviour {
 		scale = transform.localScale;
 		soundManager = GameObject.Find ("Music").GetComponent<SoundManager> ();
 		pauseMenu = GameObject.Find ("/Canvas/Pause");		
-		//pauseMenu.transform.position.y += 200f;
 		pauseMenu.SetActive (false);
 	}
 

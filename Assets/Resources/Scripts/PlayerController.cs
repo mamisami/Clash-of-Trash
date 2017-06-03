@@ -17,6 +17,8 @@ public class PlayerController : NetworkBehaviour {
 
 	public Trash trashToDrag;
 
+	GameObject quitMenu;
+
 	public class Explanation {
 		public bool isError;
 		public string waste;
@@ -44,7 +46,7 @@ public class PlayerController : NetworkBehaviour {
 	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
 
 	public void generateExplanationScrollView(){
-		GameObject content = GameObject.Find("/Canvas/Pause/Scroll View/Viewport/Content");
+		GameObject content = GameObject.Find("/Canvas/Pause/Panel/Scroll View/Viewport/Content");
 		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
 		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
 
@@ -114,9 +116,34 @@ public class PlayerController : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
+		// Set listener quit button
+		Button btn = GameObject.Find("CanvasInfos/BtnQuit").GetComponent<Button>();
+		btn.onClick.AddListener(ShowQuitPanel);
 
+		// Set listener continue button
+		Button btnContinue = GameObject.Find("BtnContinue").GetComponent<Button>();
+		btnContinue.onClick.AddListener(HideQuitPanel);
+
+		// Disable quit menu
+		quitMenu = GameObject.Find ("/Canvas/Quit");		
+		quitMenu.SetActive (false);
+
+		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
+	
 		OnScoreChange(0);
+	}
+
+	void ShowQuitPanel(){
+		Vector3 pos = quitMenu.transform.position;
+		quitMenu.SetActive (true);
+		float valStart = 10f;
+		pos.y += valStart;
+		quitMenu.transform.position = pos;
+		iTween.MoveTo (quitMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 0.5f, "easetype", iTween.EaseType.easeOutBounce));
+	}
+
+	void HideQuitPanel(){
+		quitMenu.SetActive (false);
 	}
 
 	override public void OnStartLocalPlayer() {
@@ -150,23 +177,6 @@ public class PlayerController : NetworkBehaviour {
 		else
 			txtScore.text = "Toi : " + localPlayerScore + " pts\nAdv : " + adversaryScore + " pts";
 	}
-
-
-
-	/** Command functions **/
-	/*
-	GameObject FindDraggableWithRealName(string name) {
-		GameObject[] draggables = GameObject.FindGameObjectsWithTag("Draggable");
-		foreach (GameObject draggableObject in draggables) {
-			Draggable draggable = draggableObject.GetComponent<Draggable>();
-			if (draggable.realName == name) {
-				return draggableObject;
-			}
-		}
-
-		return null;
-	}
-	*/
 
 	[Command]
 	public void CmdAddPointToScore(int point) {
