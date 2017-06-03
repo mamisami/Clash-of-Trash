@@ -21,19 +21,21 @@ public class PlayerController : NetworkBehaviour {
 
 	public class Explanation {
 		public bool isError;
+		public bool betterTrash;
 		public string waste;
 		public string badTrash;
 		public string goodTrash;
 
-		public Explanation(bool isError, string waste, string goodTrash, string badTrash = ""){
+		public Explanation(bool isError, string waste, string goodTrash, string badTrash = "", bool betterTrash = false){
 			this.isError = isError;
 			this.waste = waste;
 			this.badTrash = badTrash;
 			this.goodTrash = goodTrash;
+			this.betterTrash = betterTrash;
 		}
 
 		public string getKey(){
-			return (this.isError ? "0" : "1") + this.waste + this.badTrash + this.goodTrash;
+			return (this.isError ? "0" : "1") + (this.betterTrash ? "1" : "0") + this.waste + this.badTrash + this.goodTrash;
 		}
 			
 		public void addTo(SortedList<string, Explanation> list){
@@ -81,6 +83,12 @@ public class PlayerController : NetworkBehaviour {
 			if (exp.isError) {
 				row.transform.FindChild ("ImageTrash2").GetComponent<Image>().sprite = 
 					stringTrashToSprite (exp.badTrash);
+
+				if (exp.betterTrash) {
+					row.transform.FindChild ("ImageSignal").GetComponent<Image>().sprite = Resources.Load<Sprite> ("Sprites/Symbols/best");
+					row.transform.FindChild ("Text1").GetComponent<Text>().text = "peut aller dans";
+					row.transform.FindChild ("Text2").GetComponent<Text>().text = "va mieux dans";
+				}
 			}
 
 			i++;
@@ -92,8 +100,8 @@ public class PlayerController : NetworkBehaviour {
 		return Resources.Load<Sprite> ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
 	}
 
-	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = ""){
-		(new Explanation (isError, waste, goodTrash, badTrash)).addTo (this.explanations);
+	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = "", bool betterTrash = false){
+		(new Explanation (isError, waste, goodTrash, badTrash, betterTrash)).addTo (this.explanations);
 		foreach (KeyValuePair<string, Explanation> expl in explanations) {
 			Debug.Log (expl.Key);
 		}

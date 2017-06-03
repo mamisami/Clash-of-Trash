@@ -15,7 +15,7 @@ public static class Global
 
 	public const float TRUCK_BAR_TIME_TO_FACTORY = 10f; // In seconds
 
-	public const int PTS_PET_WASTE = 10;
+	public const int PTS_PET_WASTE = 20;
 
 	public static string WASTES_PATH = "Prefabs/Wastes";
 

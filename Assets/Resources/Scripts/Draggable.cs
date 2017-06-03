@@ -18,6 +18,7 @@ public class Draggable : NetworkBehaviour {
 
 	private int[] pts = new int[6];
 	public string bestTrashSprite;
+	public int bestTrashPts;
 
 	PlayerController player;
 
@@ -70,8 +71,10 @@ public class Draggable : NetworkBehaviour {
 		// Find prefab for best trashes and get sprite
 		foreach(GameObject trash in trashes){
 			Trash t = trash.GetComponent<Trash>();
-			if(t && (int)t.trashType == best)
+			if(t && (int)t.trashType == best) {
 				this.bestTrashSprite = t.GetComponent<SpriteRenderer>().sprite.name;
+				this.bestTrashPts = pts[best];
+			}
 		}	
 	}
 
@@ -119,7 +122,11 @@ public class Draggable : NetworkBehaviour {
 			setPlayer ();
 			if (pts >= 0) {
 				player.trashToDrag.MakePopScoreGood (pts);
-				player.addExplanation(false, GetComponent<SpriteRenderer>().sprite.name, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name);
+
+				if (bestTrashPts > pts)
+					player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name, true); //Better choice
+				else
+					player.addExplanation(false, GetComponent<SpriteRenderer>().sprite.name, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name);
 			} else {
 				player.trashToDrag.MakePopScoreBad (pts);
 				player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name);
