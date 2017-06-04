@@ -18,10 +18,9 @@ public class Draggable : NetworkBehaviour {
 
 	private int[] pts = new int[6];
 	public string bestTrashSprite;
+	public int bestTrashPts;
 
 	PlayerController player;
-
-	Trash trash = null;
 
 	Vector3 screenPoint;
 	Vector3 offset;
@@ -72,14 +71,11 @@ public class Draggable : NetworkBehaviour {
 		// Find prefab for best trashes and get sprite
 		foreach(GameObject trash in trashes){
 			Trash t = trash.GetComponent<Trash>();
-			if(t && (int)t.trashType == best)
+			if(t && (int)t.trashType == best) {
 				this.bestTrashSprite = t.GetComponent<SpriteRenderer>().sprite.name;
+				this.bestTrashPts = pts[best];
+			}
 		}	
-	}
-
-	void OnDestroy() {
-		if (trash != null)
-			trash.Close();
 	}
 
 	private void OnNameChange(string value) {
@@ -104,69 +100,42 @@ public class Draggable : NetworkBehaviour {
 	}
 
 	int GetPoints() {
-		if (this.trash != null)
-			return pts [(int)this.trash.trashType];
+		if (this.player.trashToDrag != null)
+			return pts [(int)this.player.trashToDrag.trashType];
 
 		return 0;
 	}
+
 
 	void OnMouseUp(){
 		// Anim to grow down
 		iTween.ScaleTo(gameObject, iTween.Hash("scale",normalScale,"time",0.2f,"easetype", iTween.EaseType.easeOutBack));
 
-		if (isObjectInTrash () && !trash.IsInTruckBar()) {
-			trash.Close ();
+
+		if (isObjectInTrash () && !this.player.trashToDrag.IsInTruckBar()) {
+			player.trashToDrag.Close ();
 
 			int pts = GetPoints();
 			release (pts);
-			this.trash.MakeParticleEffect ();
+			this.player.trashToDrag.MakeParticleEffect ();
 
 			setPlayer ();
 			if (pts >= 0) {
-				this.trash.MakePopScoreGood (pts);
-				player.addExplanation(false, GetComponent<SpriteRenderer>().sprite.name, trash.GetComponent<SpriteRenderer>().sprite.name);
+				player.trashToDrag.MakePopScoreGood (pts);
+
+				if (bestTrashPts > pts)
+					player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name, true); //Better choice
+				else
+					player.addExplanation(false, GetComponent<SpriteRenderer>().sprite.name, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name);
 			} else {
-				this.trash.MakePopScoreBad (pts);
-				player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, trash.GetComponent<SpriteRenderer>().sprite.name);
+				player.trashToDrag.MakePopScoreBad (pts);
+				player.addExplanation(true, GetComponent<SpriteRenderer>().sprite.name, bestTrashSprite, player.trashToDrag.GetComponent<SpriteRenderer>().sprite.name);
 			}
 		}
 	}
 
-	void OnTriggerEnter (Collider hit) {
-		Trash hitTrash = hit.gameObject.GetComponent<Trash> ();
-
-		if (hitTrash && !hitTrash.IsInTruckBar()) {
-			// Already a trash, close it
-			if(trash)
-				trash.Close ();
-			trash = hitTrash;
-			trash.Open ();
-		}
-	}
-
-	void OnTriggerStay (Collider hit) {
-		Trash hitTrash = hit.gameObject.GetComponent<Trash> ();
-
-		// If no other trash, it's the current trash
-		if (hitTrash != null && trash == null  && !hitTrash.IsInTruckBar()) {
-			hitTrash.Open ();
-			trash = hitTrash;
-		}
-	}
-
-	void OnTriggerExit (Collider hit) {
-		Trash trashExit = hit.gameObject.GetComponent<Trash> ();
-
-		if (trashExit && !trashExit.IsInTruckBar()) {
-			trashExit.Close ();
-
-			if (trashExit == trash)
-				trash = null;
-		}
-	}
-
 	bool isObjectInTrash() {
-		return trash != null;
+		return player.trashToDrag != null;
 	}
 
 	/** MultiPlayer Functions **/
@@ -183,7 +152,7 @@ public class Draggable : NetworkBehaviour {
 		setPlayer ();
 
 		player.CmdAddPointToScore (pts);
-		player.CmdAddWaste (trash.trashType);
+		player.CmdAddWaste (player.trashToDrag.trashType);
 		player.CmdRemoveDraggable(int.Parse(this.name));
 	}
 

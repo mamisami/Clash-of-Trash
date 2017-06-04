@@ -15,22 +15,25 @@ public class PlayerController : NetworkBehaviour {
 	GameObject truckBarTrash1;
 	GameObject truckBarTrash2;
 
+	public Trash trashToDrag;
 
 	public class Explanation {
 		public bool isError;
+		public bool betterTrash;
 		public string waste;
 		public string badTrash;
 		public string goodTrash;
 
-		public Explanation(bool isError, string waste, string goodTrash, string badTrash = ""){
+		public Explanation(bool isError, string waste, string goodTrash, string badTrash = "", bool betterTrash = false){
 			this.isError = isError;
 			this.waste = waste;
 			this.badTrash = badTrash;
 			this.goodTrash = goodTrash;
+			this.betterTrash = betterTrash;
 		}
 
 		public string getKey(){
-			return (this.isError ? "0" : "1") + this.waste + this.badTrash + this.goodTrash;
+			return (this.isError ? "0" : "1") + (this.betterTrash ? "1" : "0") + this.waste + this.badTrash + this.goodTrash;
 		}
 			
 		public void addTo(SortedList<string, Explanation> list){
@@ -43,7 +46,7 @@ public class PlayerController : NetworkBehaviour {
 	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
 
 	public void generateExplanationScrollView(){
-		GameObject content = GameObject.Find("/Canvas/Pause/Scroll View/Viewport/Content");
+		GameObject content = GameObject.Find("/Canvas/Pause/Panel/Scroll View/Viewport/Content");
 		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
 		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
 
@@ -78,6 +81,12 @@ public class PlayerController : NetworkBehaviour {
 			if (exp.isError) {
 				row.transform.FindChild ("ImageTrash2").GetComponent<Image>().sprite = 
 					stringTrashToSprite (exp.badTrash);
+
+				if (exp.betterTrash) {
+					row.transform.FindChild ("ImageSignal").GetComponent<Image>().sprite = Resources.Load<Sprite> ("Sprites/Symbols/best");
+					row.transform.FindChild ("Text1").GetComponent<Text>().text = "peut aller dans";
+					row.transform.FindChild ("Text2").GetComponent<Text>().text = "va mieux dans";
+				}
 			}
 
 			i++;
@@ -89,8 +98,8 @@ public class PlayerController : NetworkBehaviour {
 		return Resources.Load<Sprite> ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
 	}
 
-	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = ""){
-		(new Explanation (isError, waste, goodTrash, badTrash)).addTo (this.explanations);
+	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = "", bool betterTrash = false){
+		(new Explanation (isError, waste, goodTrash, badTrash, betterTrash)).addTo (this.explanations);
 		foreach (KeyValuePair<string, Explanation> expl in explanations) {
 			Debug.Log (expl.Key);
 		}
@@ -114,7 +123,7 @@ public class PlayerController : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
-
+	
 		OnScoreChange(0);
 	}
 
@@ -149,23 +158,6 @@ public class PlayerController : NetworkBehaviour {
 		else
 			txtScore.text = "Toi : " + localPlayerScore + " pts\nAdv : " + adversaryScore + " pts";
 	}
-
-
-
-	/** Command functions **/
-	/*
-	GameObject FindDraggableWithRealName(string name) {
-		GameObject[] draggables = GameObject.FindGameObjectsWithTag("Draggable");
-		foreach (GameObject draggableObject in draggables) {
-			Draggable draggable = draggableObject.GetComponent<Draggable>();
-			if (draggable.realName == name) {
-				return draggableObject;
-			}
-		}
-
-		return null;
-	}
-	*/
 
 	[Command]
 	public void CmdAddPointToScore(int point) {
