@@ -40,6 +40,12 @@ public class CameraController : MonoBehaviour {
 		Button btnContinue = GameObject.Find("BtnContinue").GetComponent<Button>();
 		btnContinue.onClick.AddListener(HideQuitPanel);
 
+		// Remove replay if multi
+		Debug.Log(Global.isSinglePlayer);
+		GameObject btnReplay = GameObject.Find("Quit/Panel/BtnReplay");
+		Debug.Log (btnReplay);
+		btnReplay.gameObject.SetActive (Global.isSinglePlayer);
+
 		// Disable quit menu
 		quitMenu = GameObject.Find ("/Canvas/Quit");		
 		quitMenu.SetActive (false);
