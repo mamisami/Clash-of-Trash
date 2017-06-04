@@ -17,8 +17,6 @@ public class PlayerController : NetworkBehaviour {
 
 	public Trash trashToDrag;
 
-	GameObject quitMenu;
-
 	public class Explanation {
 		public bool isError;
 		public bool betterTrash;
@@ -124,34 +122,9 @@ public class PlayerController : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		// Set listener quit button
-		Button btn = GameObject.Find("CanvasInfos/BtnQuit").GetComponent<Button>();
-		btn.onClick.AddListener(ShowQuitPanel);
-
-		// Set listener continue button
-		Button btnContinue = GameObject.Find("BtnContinue").GetComponent<Button>();
-		btnContinue.onClick.AddListener(HideQuitPanel);
-
-		// Disable quit menu
-		quitMenu = GameObject.Find ("/Canvas/Quit");		
-		quitMenu.SetActive (false);
-
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
 	
 		OnScoreChange(0);
-	}
-
-	void ShowQuitPanel(){
-		Vector3 pos = quitMenu.transform.position;
-		quitMenu.SetActive (true);
-		float valStart = 10f;
-		pos.y += valStart;
-		quitMenu.transform.position = pos;
-		iTween.MoveTo (quitMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 0.5f, "easetype", iTween.EaseType.easeOutBounce));
-	}
-
-	void HideQuitPanel(){
-		quitMenu.SetActive (false);
 	}
 
 	override public void OnStartLocalPlayer() {
