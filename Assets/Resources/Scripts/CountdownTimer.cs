@@ -11,12 +11,9 @@ public class CountdownTimer : MonoBehaviour {
 	void Start () {
 		text = GetComponent<Text> ();
 		scale = transform.localScale;
-		soundManager = GameObject.Find ("Music").GetComponent<SoundManager> ();
 		pauseMenu = GameObject.Find ("/Canvas/Pause");		
 		pauseMenu.SetActive (false);
 	}
-
-	SoundManager soundManager;
 	Text text;
 
 	private float timeLeft = Global.GAME_TIME;
@@ -63,13 +60,13 @@ public class CountdownTimer : MonoBehaviour {
 				for(int i = 10; i<oldTimeLeft;i+=10){
 					if (check (i + 1, oldTimeLeft)) {
 						growDown ();
-						soundManager.SpeedUp (0.01f);
+						MusicManager.SpeedUp (0.01f);
 					}					
 				}
 			}
 
 			if(check(11, oldTimeLeft))
-				soundManager.SpeedUp (0.5f);
+				MusicManager.SpeedUp (0.5f);
 			
 			// Rotate
 			for(int i = 1; i<oldTimeLeft;i++){
