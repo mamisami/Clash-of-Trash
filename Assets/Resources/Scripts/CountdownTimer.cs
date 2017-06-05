@@ -153,6 +153,10 @@ public class CountdownTimer : MonoBehaviour {
 		if (truckBar)
 			Destroy (truckBar);
 
+		GameObject btnQuit = GameObject.Find ("BtnQuit");
+		if (btnQuit)
+			Destroy (btnQuit);
+
 		//Show the finish menu
 		Vector3 pos = finishMenu.transform.position;
 		finishMenu.SetActive (true);
