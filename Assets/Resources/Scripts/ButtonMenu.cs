@@ -72,6 +72,8 @@ public class ButtonMenu : MonoBehaviour {
 			NetworkManager.singleton.StopServer();
 			NetworkManager.singleton.StopClient();
 		}
+
+		NetworkManager.singleton.GetComponent<CoT_NetworkManager>().clearGame();
 	}
 
 	/// <summary>

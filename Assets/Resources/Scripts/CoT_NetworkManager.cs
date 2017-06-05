@@ -83,25 +83,28 @@ public class CoT_NetworkManager : NetworkManager {
 	public override void OnStopClient() {
 		base.OnStopClient ();
 
-		clearGame ();
+		if (Global.isStart)
+			clearGame ();
 	}
 
 	public override void OnStopHost() {
 		base.OnStopHost ();
 
-		clearGame ();
+		if (Global.isStart)
+			clearGame ();
 	}
 
 	public override void OnStopServer() {
 		base.OnStopServer ();
 
-		clearGame ();
+		if (Global.isStart)
+			clearGame ();
 	}
 
 	/// <summary>
 	/// Stop the game and clear all game object
 	/// </summary>
-	private void clearGame() {
+	public void clearGame() {
 		Global.isStart = false;
 		this.maxConnections = 2; 
 		countPlayers = 0;
