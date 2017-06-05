@@ -145,8 +145,13 @@ public class PlayerController : NetworkBehaviour {
 
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
-			if (!Global.isSinglePlayer)
-				adversaryScore = GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().score;
+			if (!Global.isSinglePlayer) {
+				GameObject adv = GameObject.FindWithTag ("Player");
+				if (adv)
+					adversaryScore = adv.GetComponent<PlayerController> ().score;
+				else
+					adversaryScore = 0;
+			}
 		} else {
 			localPlayerScore = GameObject.FindWithTag ("LocalPlayer").GetComponent<PlayerController> ().score;
 			if (!Global.isSinglePlayer)
