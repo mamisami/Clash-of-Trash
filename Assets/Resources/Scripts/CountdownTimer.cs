@@ -171,6 +171,23 @@ public class CountdownTimer : MonoBehaviour {
 		if (localPlayerObject != null) {
 			player = localPlayerObject.GetComponent<PlayerController> ();
 			player.generateExplanationScrollView ();
+
+			if (!Global.isSinglePlayer) {
+				GameObject adversaryObject = GameObject.FindGameObjectWithTag ("Player");
+				if (adversaryObject) {
+					PlayerController adversary = adversaryObject.GetComponent<PlayerController> ();
+
+					string result = "GAGNE";
+					if (player.score < adversary.score)
+						result = "PERDU";
+					else if (player.score == adversary.score)
+						result = "EGALITE";
+
+					GameObject title = GameObject.Find("/Canvas/Finish/Panel/Fini");
+					if (title)
+						title.GetComponent<Text>().text = result;
+				}
+			}
 		}
 	
 	}
