@@ -146,7 +146,8 @@ public class CountdownTimer : MonoBehaviour {
 
 		//Hide all draggable
 		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
-		spawn.GetComponent<SpawnManager> ().HideAll ();
+		if (spawn)
+			spawn.GetComponent<SpawnManager> ().HideAll ();
 
 		//Destroy the truckbar
 		GameObject truckBar = GameObject.FindWithTag ("TruckBar");
