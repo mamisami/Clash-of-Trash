@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+/// <summary>
+/// Truck bar game object 
+/// </summary>
 public class TruckBar : NetworkBehaviour {
 	PlayerController localPlayer;
 	PlayerController adversary;
 
 	TrashManager trashManager;
 
+	/// <summary>
+	/// Position of the truck
+	/// </summary>
 	float positionX = 0;
 
 	GameObject truck;
@@ -24,6 +30,9 @@ public class TruckBar : NetworkBehaviour {
 
 	float timeFactoryToTrash = Global.TRUCK_BAR_TIME_TO_FACTORY;
 
+	/// <summary>
+	/// Set controllers game object if there are null
+	/// </summary>
 	void setControllers() {
 		if (localPlayer == null) {
 			GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
@@ -44,10 +53,10 @@ public class TruckBar : NetworkBehaviour {
 		}
 	}
 
-	// Use this for initialization
 	void Start () {
 		setControllers ();
 
+		//Get game objects
 		truck = transform.Find ("Truck").gameObject;
 		positionX = truck.transform.position.x;
 
@@ -66,27 +75,38 @@ public class TruckBar : NetworkBehaviour {
 		rot.y = 180f;
 		truck.transform.rotation = rot;
 
+		//Start the truckbar
 		MoveTruckToFactory ();
 	}
 
+	/// <summary>
+	/// Make the animation of the truck go to the trash
+	/// </summary>
 	void MoveTruckToTrash(){
 		iTween.MoveTo(truck,  iTween.Hash("x", positionX,"time",timeFactoryToTrash,"easetype", iTween.EaseType.linear,
 			"oncompletetarget" , this.gameObject,
 			"oncomplete", "TruckMovedToTrash"));
 		iTween.RotateTo(truck,  iTween.Hash("y", 0f,"time",1f,"easetype", iTween.EaseType.linear));
-
 	}
 
+	/// <summary>
+	/// Called when the truck arrive to trashes
+	/// </summary>
 	void TruckMovedToTrash(){
-		// Empty 
+		// Empty trashes (get points too)
 		EmptyTrash (trashSlot1);
 		EmptyTrash (trashSlot2);
 		trashSlot1 = null;
 		trashSlot2 = null;
 
+		//Go to the factory
 		this.MoveTruckToFactory ();
 	}
 
+	/// <summary>
+	/// Clear a trash
+	/// </summary>
+	/// <param name="go">Game Object of the trash</param>
 	void EmptyTrash(GameObject go){	
 		if (!go)
 			return;
@@ -100,6 +120,7 @@ public class TruckBar : NetworkBehaviour {
 		trash.ReplaceTrash ();
 		trash.draggable = true;
 
+		//Get points of the trash
 		int score = 0; 
 		try {
 			setControllers ();	
@@ -108,11 +129,12 @@ public class TruckBar : NetworkBehaviour {
 			
 		}
 
+		//Pop the score
 		if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1)) {
 			trash.MakePopScoreGood (score);
-			//Invoke ("MakePopScoreGoodTrash", popScoreTime);
 		}
 
+		//Add points obtained
 		if (isServer) {
 			if (Global.isSinglePlayer || (!Global.isSinglePlayer && go == trashSlot1))
 				this.localPlayer.CmdAddPointToScore (score);
@@ -123,6 +145,9 @@ public class TruckBar : NetworkBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Make the animation of the truck go to the factory and make sound for clear indication
+	/// </summary>
 	void MoveTruckToFactory(){
 		iTween.MoveTo(truck,  iTween.Hash("x", positionX-1.6f,"time",timeFactoryToTrash,"easetype", iTween.EaseType.linear,
 			"oncompletetarget" , this.gameObject,
@@ -138,15 +163,27 @@ public class TruckBar : NetworkBehaviour {
 		Destroy(audioSource, myClip.length);
 	}
 
+	/// <summary>
+	/// "Open" the truckbar when a waste is in (make alpha greater)
+	/// </summary>
 	public void Open() {
 		iTween.FadeTo(gameObject,  iTween.Hash("alpha", 0.5f,"time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 	}
 
+	/// <summary>
+	/// "Close" the truckbar when a waste is in (make alpha lower)
+	/// </summary>
 	public void Close() {
 		iTween.FadeTo(gameObject,  iTween.Hash("alpha", 1f,"time",0.8f,"easetype", iTween.EaseType.easeOutExpo));
 	}
 
+	/// <summary>
+	/// Place a trash to a slot in the truckbar
+	/// </summary>
+	/// <param name="trash">Trash game object</param>
+	/// <param name="tr">Trash object</param>
 	public void PlaceTrash(GameObject trash, Trash tr){
+		//Choose the slot (in single player -> the first free slot) (in multiplayer, on the first slot if free, the second is the slot of the adversary)
 		int num;
 
 		if (Global.isSinglePlayer) {
@@ -172,9 +209,16 @@ public class TruckBar : NetworkBehaviour {
 			localPlayer.CmdAddTrashToTruckBar(trash.tag);
 		}
 
+		//Add the trash to a specified slot
 		AddTrash(trash, tr, num);
 	}
 
+	/// <summary>
+	/// Place the trash to a specified slot
+	/// </summary>
+	/// <param name="trash">Trash game object</param>
+	/// <param name="tr">Trash object</param>
+	/// <param name="num">Slot number</param>
 	public void AddTrash(GameObject trash, Trash tr, int num){		
 		tr.draggable = false;
 

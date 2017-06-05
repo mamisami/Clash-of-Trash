@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Manage all the background music
+/// </summary>
 public class MusicManager : MonoBehaviour {
 
 	static AudioSource audioSource;

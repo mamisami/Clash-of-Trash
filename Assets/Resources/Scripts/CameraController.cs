@@ -8,26 +8,38 @@ public class CameraController : MonoBehaviour {
 	public NetworkDiscovery discovery;
 	public CoT_NetworkManager manager;
 
+	/// <summary>
+	/// Background image
+	/// </summary>
 	public Image imgLvl;
 
 	public Text txtTimer;
 
+	/// <summary>
+	/// Timer of search multiplayer game before become a server
+	/// </summary>
 	float timerMultiplayer = 5.0f;
-	bool timerEnabled = !Global.isSinglePlayer;
+	/// <summary>
+	/// Enable the multiplayer connection timer
+	/// </summary>
+	bool timeMultiplayerEnabled = !Global.isSinglePlayer;
 
 	GameObject quitMenu;
 
-	// Use this for initialization
+	/// <summary>
+	/// Load background image, Start network things and load quit panel
+	/// </summary>
 	void Start () {
 		imgLvl.sprite = Resources.Load<Sprite>("Sprites/Background/level"+Global.level);
 
 		//if (Global.level == 2)
 		txtTimer.color = Color.grey;
 
+		//If we are in multi, start the discovery of a server
 		if (Global.isSinglePlayer) {
 			NetworkManager.singleton.StartHost ();
 		} else {
-			discovery.broadcastKey = discovery.broadcastKey + Global.level;
+			discovery.broadcastKey = discovery.broadcastKey + Global.level; //Search a multiplayer server with the same level
 			discovery.Initialize();
 			discovery.StartAsClient();
 		}
@@ -51,7 +63,9 @@ public class CameraController : MonoBehaviour {
 		quitMenu.SetActive (false);
 	}
 
-
+	/// <summary>
+	/// Show the quit panel
+	/// </summary>
 	void ShowQuitPanel(){
 		Vector3 pos = quitMenu.transform.position;
 		quitMenu.SetActive (true);
@@ -61,16 +75,22 @@ public class CameraController : MonoBehaviour {
 		iTween.MoveTo (quitMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 0.5f, "easetype", iTween.EaseType.easeOutBounce));
 	}
 
+	/// <summary>
+	/// Hide the quit panel
+	/// </summary>
 	void HideQuitPanel(){
 		quitMenu.SetActive (false);
 	}
 
-	// Update is called once per frame
+	/// <summary>
+	/// Update the multiplayer timer
+	/// </summary>
 	void Update () {
-		if (timerEnabled) {
+		if (timeMultiplayerEnabled) {
 			timerMultiplayer -= Time.deltaTime;
 			if (timerMultiplayer < 0) {
-				timerEnabled = false;
+				//If in the given time we don't have find a server, we become the server
+				timeMultiplayerEnabled = false;
 
 				if (!manager.isNetworkActive) {
 					discovery.StopBroadcast ();

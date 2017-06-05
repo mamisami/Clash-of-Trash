@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using UnityEngine.Assertions;
 
+/// <summary>
+/// Manage network connection for multiplayer
+/// </summary>
 public class CoT_NetworkManager : NetworkManager {
 	public NetworkDiscovery discovery;
 
@@ -16,16 +19,8 @@ public class CoT_NetworkManager : NetworkManager {
 	public bool isServer = false;
 
 	private int countPlayers = 0;
-	//public GameObject playerPrefab;
 
 	public Text countText;
-	/*
-	public Text winText;
-	public Text hitText;
-	public CameraController cameraController;
-	*/
-
-	//public List<UnityEngine.Networking.PlayerController> playerControllers = new List<UnityEngine.Networking.PlayerController> ();
 
 	public override void OnServerConnect(NetworkConnection conn)
 	{
@@ -40,13 +35,16 @@ public class CoT_NetworkManager : NetworkManager {
 			if(!Global.isSinglePlayer)
 				discovery.StopBroadcast ();
 
+			//Create the trash manager and spawn it on the client
 			Object trashControllerPrefab = Resources.Load ("Prefabs/TrashManager", typeof(GameObject));
 			GameObject trashControllerObject = Instantiate(trashControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			NetworkServer.Spawn (trashControllerObject);
 
+			//Create the spawn manager (only on the server)
 			Object spawnManagerPrefab = Resources.Load ("Prefabs/SpawnManager", typeof(GameObject));
 			Instantiate(spawnManagerPrefab, Vector3.zero, Quaternion.identity);
 
+			//If game world 2, create de truckbar and spawn it on the client
 			if (Global.level == 2) {
 				Object truckBarPrefab = Resources.Load ("Prefabs/TruckBar", typeof(GameObject));
 				GameObject truckBarObject = Instantiate(truckBarPrefab, new Vector3(-2.15f, 23.90f, 0f), Quaternion.identity) as GameObject;
@@ -57,20 +55,25 @@ public class CoT_NetworkManager : NetworkManager {
 		}
 	}
 
+	/// <summary>
+	/// Start the game
+	/// </summary>
 	private void startGame() {
-		txtAdvSearch.enabled = false;
+		txtAdvSearch.enabled = false; //Hide adversary search string
 		Global.isStart = true;
 	}
 
 	public override void OnClientConnect(NetworkConnection conn) {
 		base.OnClientConnect (conn);
 
+		//If the client connect start the game (only on the client, the server start at the same time but from the OnServerConnect function)
 		if (!isServer)
 			startGame();
 	}
 
 	public override void OnStartHost()
 	{
+		//When the game become a server start the discovery broadcast
 		if (!Global.isSinglePlayer) {
 			discovery.Initialize ();
 			discovery.StartAsServer ();
@@ -95,6 +98,9 @@ public class CoT_NetworkManager : NetworkManager {
 		clearGame ();
 	}
 
+	/// <summary>
+	/// Stop the game and clear all game object
+	/// </summary>
 	private void clearGame() {
 		Global.isStart = false;
 		this.maxConnections = 2; 
@@ -104,6 +110,7 @@ public class CoT_NetworkManager : NetworkManager {
 		if (spawnManager)
 			Destroy (spawnManager);
 
+		//Stop the broadcast of the NetworkDiscovery (free the port)
 		GameObject networkDiscovery = GameObject.FindWithTag ("NetworkDiscovery");
 		if (networkDiscovery) {
 			try {
@@ -115,11 +122,4 @@ public class CoT_NetworkManager : NetworkManager {
 
 		SceneManager.LoadScene("Menu");
 	}
-
-	/*
-	public override void OnServerAddPlayer (NetworkConnection conn, short playerControllerId) {
-		base.OnServerAddPlayer(conn, playerControllerId);
-		playerControllers.AddRange (conn.playerControllers);
-	}
-	*/
 }

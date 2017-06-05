@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+/// <summary>
+/// Trash Manager which manage the number of waste per trash
+/// </summary>
 public class TrashManager : NetworkBehaviour {
 
 
@@ -24,10 +27,10 @@ public class TrashManager : NetworkBehaviour {
 	[SyncVar]
 	int trashPet = 0;
 
-	// Use this for initialization
-	void Start () {
-	}
-
+	/// <summary>
+	/// Add a waste to a trash
+	/// </summary>
+	/// <param name="type">Type of the trash</param>
 	public void addWaste(ClassificationType type) {
 		switch (type) {
 			case ClassificationType.Alu:
@@ -51,6 +54,11 @@ public class TrashManager : NetworkBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Get points made with a trash
+	/// </summary>
+	/// <param name="wasteType">Type of the trash</param>
+	/// <returns>Number of points</returns>
 	public int getPoints(ClassificationType wasteType) {
 		int nbWastes = 0;
 
@@ -78,6 +86,10 @@ public class TrashManager : NetworkBehaviour {
 		return nbWastes * Global.PTS_PET_WASTE;
 	}
 
+	/// <summary>
+	/// Rebase to 0 the number of waste in a trash
+	/// </summary>
+	/// <param name="type">Type of the trash</param>
 	public void reinitWaste(ClassificationType type) {
 		switch (type) {
 			case ClassificationType.Alu:

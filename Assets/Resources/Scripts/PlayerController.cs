@@ -4,7 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
+/// <summary>
+/// Player controller (player object in multiplayer)
+/// </summary>
 public class PlayerController : NetworkBehaviour {
+	/// <summary>
+	/// Score var with a hook on it for display all changes
+	/// </summary>
 	[SyncVar(hook="OnScoreChange")]
 	public int score = 0;
 
@@ -17,9 +23,14 @@ public class PlayerController : NetworkBehaviour {
 
 	public Trash trashToDrag;
 
+	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
+
+	/// <summary>
+	/// Represent an explanation shown in the finish scrollview
+	/// </summary>
 	public class Explanation {
 		public bool isError;
-		public bool betterTrash;
+		public bool betterTrash; //Describe if a better trash is available if it's not an error
 		public string waste;
 		public string badTrash;
 		public string goodTrash;
@@ -32,10 +43,18 @@ public class PlayerController : NetworkBehaviour {
 			this.betterTrash = betterTrash;
 		}
 
+		/// <summary>
+		/// Get the key for the array insertion (first two char are for the order of display)
+		/// </summary>
+		/// <returns>A string with the key</returns>
 		public string getKey(){
 			return (this.isError ? "0" : "1") + (this.betterTrash ? "1" : "0") + this.waste + this.badTrash + this.goodTrash;
 		}
 			
+		/// <summary>
+		/// Add the explanation to a list
+		/// </summary>
+		/// <param name="list">The list on which we add the explanation</param>
 		public void addTo(SortedList<string, Explanation> list){
 			string key = getKey ();
 			if (!list.ContainsKey (key)) 
@@ -43,10 +62,11 @@ public class PlayerController : NetworkBehaviour {
 		}
 	}
 
-	private SortedList<string, Explanation> explanations = new SortedList<string, Explanation>();
-
+	/// <summary>
+	/// Generate the explanation scroll view at the end of the game
+	/// </summary>
 	public void generateExplanationScrollView(){
-		GameObject content = GameObject.Find("/Canvas/Pause/Panel/Scroll View/Viewport/Content");
+		GameObject content = GameObject.Find("/Canvas/Finish/Panel/Scroll View/Viewport/Content");
 		GameObject goodRow = Resources.Load<GameObject> ("ScrollView/GoodRow");
 		GameObject badRow = Resources.Load<GameObject> ("ScrollView/BadRow");
 
@@ -64,24 +84,24 @@ public class PlayerController : NetworkBehaviour {
 		content.GetComponent<RectTransform> ().sizeDelta = sd;
 		int i = 0;
 
+		//Generate all explanation rows
 		foreach (KeyValuePair<string, Explanation> explKeyVal in explanations) {
 			Explanation exp = explKeyVal.Value;
 			GameObject go = goodRow;
 			if (exp.isError)
 				go = badRow;
 			
+			//Generate the row
 			GameObject row = Instantiate (go, content.transform.position, Quaternion.identity, content.transform);
 			Vector3 locPos = row.transform.localPosition;
 			locPos.y -= rowHeight * i;
 			row.transform.localPosition = locPos;
-			row.transform.FindChild ("ImageWaste").GetComponent<Image>().sprite = 
-				Resources.Load<Sprite> ("Sprites/Waste/" + exp.waste);
-			row.transform.FindChild ("ImageTrash1").GetComponent<Image>().sprite = 
-				stringTrashToSprite (exp.goodTrash);
+			row.transform.FindChild ("ImageWaste").GetComponent<Image>().sprite = Resources.Load<Sprite> ("Sprites/Waste/" + exp.waste);
+			row.transform.FindChild ("ImageTrash1").GetComponent<Image>().sprite = stringTrashToSprite (exp.goodTrash);
 			if (exp.isError) {
-				row.transform.FindChild ("ImageTrash2").GetComponent<Image>().sprite = 
-					stringTrashToSprite (exp.badTrash);
+				row.transform.FindChild ("ImageTrash2").GetComponent<Image>().sprite = stringTrashToSprite (exp.badTrash);
 
+				//If a better trash is possible, display it
 				if (exp.betterTrash) {
 					row.transform.FindChild ("ImageSignal").GetComponent<Image>().sprite = Resources.Load<Sprite> ("Sprites/Symbols/best");
 					row.transform.FindChild ("Text1").GetComponent<Text>().text = "peut aller dans";
@@ -93,19 +113,34 @@ public class PlayerController : NetworkBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Call to have a trash sprite
+	/// </summary>
+	/// <param name="str">Trash name</param>
+	/// <returns>Trash sprite</returns>
 	private Sprite stringTrashToSprite(string str){
 		Debug.Log ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
 		return Resources.Load<Sprite> ("Sprites/Trash/" + str.Split ('_') [0] + "/" + str);
 	}
 
+	/// <summary>
+	/// Add an explanation to the finish scroll view
+	/// </summary>
+	/// <param name="isError">Is the user is wrong</param>
+	/// <param name="waste">Name of the waste</param>
+	/// <param name="goodTrash">What is the goode trash</param>
+	/// <param name="badTrash">What is the bad trash (or the less good)</param>
+	/// <param name="betterTrash">Bool which say that the user haven't wrong but there is a better choice</param>
 	public void addExplanation(bool isError, string waste, string goodTrash, string badTrash = "", bool betterTrash = false){
 		(new Explanation (isError, waste, goodTrash, badTrash, betterTrash)).addTo (this.explanations);
 		foreach (KeyValuePair<string, Explanation> expl in explanations) {
 			Debug.Log (expl.Key);
 		}
-		//generateExplanationScrollView ();
 	}
 
+	/// <summary>
+	/// Set managers game object if there are null
+	/// </summary>
 	public void setManagers() {
 		if (spawnManager == null) {
 			GameObject spawnManagerObject = GameObject.FindWithTag ("SpawnManager");
@@ -120,22 +155,24 @@ public class PlayerController : NetworkBehaviour {
 		}
     }
 
-	// Use this for initialization
 	void Start () {
 		txtScore = GameObject.FindWithTag ("TxtScore").GetComponent<Text> ();
 	
+		//Init the score
 		OnScoreChange(0);
 	}
 
+	/// <summary>
+	/// Tag the local player like that which means that the adversary have just the tag "player"
+	/// </summary>
 	override public void OnStartLocalPlayer() {
 		this.tag = "LocalPlayer";
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
+	/// <summary>
+	/// Called when the score var change
+	/// </summary>
+	/// <param name="value">The new score value</param>
 	void OnScoreChange(int value) {
 		int localPlayerScore;
 		int adversaryScore = 0;
@@ -143,6 +180,8 @@ public class PlayerController : NetworkBehaviour {
 		if (NetworkManager.singleton.IsClientConnected ())
 			score = value;
 
+		//Get the score of all players
+		//Check if we are on the local player object
 		if (this.tag == "LocalPlayer") {
 			localPlayerScore = value;
 			if (!Global.isSinglePlayer) {
@@ -158,17 +197,26 @@ public class PlayerController : NetworkBehaviour {
 				adversaryScore = value;
 		}
 
+		//Show the score
 		if (Global.isSinglePlayer)
 			txtScore.text = "    " + localPlayerScore + " pts";
 		else
 			txtScore.text = "Toi : " + localPlayerScore + " pts\nAdv : " + adversaryScore + " pts";
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON THE SERVER - Add points to score
+	/// </summary>
+	/// <param name="point">Points to add (can be negative)</param>
 	[Command]
 	public void CmdAddPointToScore(int point) {
 		this.score += (int)point;
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON THE SERVER - Add a waste to the trash
+	/// </summary>
+	/// <param name="type">Trash where to add the waste</param>
 	[Command]
 	public void CmdAddWaste(ClassificationType type) {
 		setManagers();
@@ -176,6 +224,11 @@ public class PlayerController : NetworkBehaviour {
 		trashManager.addWaste(type);
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON THE SERVER - Move a draggable
+	/// </summary>
+	/// <param name="id">Id of the draggable in the spawnmanager array (id is the name of the object too)</param>
+	/// <param name="newPosition">Position where to move the draggable</param>
 	[Command]
 	public void CmdMoveDraggable(int id, Vector3 newPosition) {
 		setManagers();
@@ -183,14 +236,23 @@ public class PlayerController : NetworkBehaviour {
 		spawnManager.draggables[id].transform.position = newPosition;
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON THE SERVER - Destroy a draggable
+	/// </summary>
+	/// <param name="draggableID">Id of the draggable in the spawnmanager array (id is the name of the object too)</param>
     [Command]
 	public void CmdRemoveDraggable(int draggableID) {
         setManagers();
 
+		//Destroy the draggable and say to the spawnmanager that we need a new one
 		Destroy (spawnManager.draggables[draggableID]);
 		spawnManager.spawnDraggable (draggableID);
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON THE SERVER - Add a trash on the truck bar
+	/// </summary>
+	/// <param name="tag"></param>
 	[Command]
 	public void CmdAddTrashToTruckBar(string tag) {
 		if (isLocalPlayer) {
@@ -200,6 +262,10 @@ public class PlayerController : NetworkBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// EXECUTE ONLY ON CLIENTS - Add a trash on the truck bar
+	/// </summary>
+	/// <param name="tag"></param>
 	[ClientRpc]
 	public void RpcAddTrashToTruckBar(string tag) {
 		if (!isLocalPlayer) {
@@ -207,18 +273,18 @@ public class PlayerController : NetworkBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Add a trash on the truck bar
+	/// </summary>
+	/// <param name="tag">tag of the trash</param>
 	public void AddTrashToTruckBar(string tag) {
 		GameObject trashObject = GameObject.FindWithTag(tag);
 		Trash trash = trashObject.GetComponent<Trash>();
 
 		TruckBar truckBar = GameObject.FindWithTag("TruckBar").GetComponent<TruckBar>();
 
+		//Add the trash
 		trash.ShowEmptyTrash();
 		truckBar.AddTrash(trashObject, trash, 2);
-	}
-
-	public void StopAll(){
-
-
 	}
 }

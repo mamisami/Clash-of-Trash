@@ -3,55 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Time of the game controller
+/// </summary>
 public class CountdownTimer : MonoBehaviour {
 
-	GameObject pauseMenu;
-
-	// Use this for initialization
-	void Start () {
-		text = GetComponent<Text> ();
-		scale = transform.localScale;
-		pauseMenu = GameObject.Find ("/Canvas/Pause");		
-		pauseMenu.SetActive (false);
-	}
+	GameObject finishMenu;
 	Text text;
 
 	private float timeLeft = Global.GAME_TIME;
-	public Color blink1 = Color.red;
-	public Color blink2 = Color.yellow;
 
 	Vector2 scale;
+
+	void Start () {
+		text = GetComponent<Text> ();
+		scale = transform.localScale;
+		finishMenu = GameObject.Find ("/Canvas/Finish");		
+		finishMenu.SetActive (false);
+	}
+
 	void Update()
 	{
 		text.enabled = Global.isStart;
 
+		//If the game is started, take the time
 		if (Global.isStart) {
 			float oldTimeLeft = timeLeft;
 			timeLeft -= Time.deltaTime;
+
+			//Check the time for make it blink
 			if (check (0, oldTimeLeft)) {
 				TimeFinish ();
 			} else if (check (1, oldTimeLeft)) {
-				setColor (blink1);
+				setColor (Global.TIMER_BLINK_COLOR_1);
 				growDown();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (2, oldTimeLeft)) {
-				setColor (blink2);
+				setColor (Global.TIMER_BLINK_COLOR_2);
 				growDown();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (3, oldTimeLeft)) {
-				setColor (blink1);
+				setColor (Global.TIMER_BLINK_COLOR_1);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (4, oldTimeLeft)) {
-				setColor (blink2);
+				setColor (Global.TIMER_BLINK_COLOR_2);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (5, oldTimeLeft)) {
-				setColor (blink1);
+				setColor (Global.TIMER_BLINK_COLOR_1);
 				growDown();
 				MakeSound ("Music/Alarm", 1.0f);
 			} else if (check (6, oldTimeLeft)) {
-				setColor (blink2);
+				setColor (Global.TIMER_BLINK_COLOR_2);
 				growDown ();
 				MakeSound ("Music/Alarm", 1.0f);
 			}
@@ -60,11 +64,14 @@ public class CountdownTimer : MonoBehaviour {
 				for(int i = 10; i<oldTimeLeft;i+=10){
 					if (check (i + 1, oldTimeLeft)) {
 						growDown ();
+
+						//Accelerate the music
 						MusicManager.SpeedUp (0.01f);
 					}					
 				}
 			}
 
+			//At ten second before the end, make a huge acceleration of the music
 			if(check(11, oldTimeLeft))
 				MusicManager.SpeedUp (0.5f);
 			
@@ -79,14 +86,30 @@ public class CountdownTimer : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Check the time
+	/// </summary>
+	/// <param name="sec">Searched time</param>
+	/// <param name="oldTimeLeft">old time</param>
+	/// <returns></returns>
 	bool check(float sec, float oldTimeLeft){
 		return timeLeft <= sec && oldTimeLeft > sec;
 	}
 
+	/// <summary>
+	/// Set the text color
+	/// </summary>
+	/// <param name="c">Color to set</param>
 	void setColor(Color c){
 		text.color = c;
 	}
 
+	/// <summary>
+	/// Make the last five second sound
+	/// </summary>
+	/// <param name="resource">Ressource of the sound</param>
+	/// <param name="volume">Volume</param>
+	/// <param name="time">Period of time</param>
 	public void MakeSound(string resource, float volume, float time=0.0f){
 		//play sound and destroy audio source
 		AudioClip myClip = Resources.Load<AudioClip>(resource);
@@ -98,9 +121,10 @@ public class CountdownTimer : MonoBehaviour {
 		Destroy(audioSource, myClip.length);
 	}
 
+	/// <summary>
+	/// Grow down the text
+	/// </summary>
 	void growDown(){
-		//iTween.ScaleTo(gameObject, iTween.Hash("scale",scale,"time",0.8f,"easetype", iTween.EaseType.easeOutBack));
-
 		iTween.ValueTo(gameObject, iTween.Hash(
 			"from", scale + scale*0.2f,
 			"to", scale,
@@ -114,23 +138,28 @@ public class CountdownTimer : MonoBehaviour {
 		transform.localScale = scale;
 	}
 
+	/// <summary>
+	/// Action to do when the time is over
+	/// </summary>
 	void TimeFinish(){
 		Global.isStart = false;
 
+		//Hide all draggable
 		GameObject spawn = GameObject.FindGameObjectWithTag ("SpawnManager");
 		spawn.GetComponent<SpawnManager> ().HideAll ();
 
+		//Destroy the truckbar
 		GameObject truckBar = GameObject.FindWithTag ("TruckBar");
 		if (truckBar)
 			Destroy (truckBar);
 
-		//Show menu
-		Vector3 pos = pauseMenu.transform.position;
-		pauseMenu.SetActive (true);
+		//Show the finish menu
+		Vector3 pos = finishMenu.transform.position;
+		finishMenu.SetActive (true);
 		float valStart = 50f;
 		pos.y += valStart;
-		pauseMenu.transform.position = pos;
-		iTween.MoveTo (pauseMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 1f, "easetype", iTween.EaseType.easeOutBounce));
+		finishMenu.transform.position = pos;
+		iTween.MoveTo (finishMenu, iTween.Hash ("position", new Vector3 (pos.x, pos.y-valStart, pos.z), "time", 1f, "easetype", iTween.EaseType.easeOutBounce));
 	
 		PlayerController player;
 		GameObject localPlayerObject = GameObject.FindGameObjectWithTag ("LocalPlayer");
@@ -142,6 +171,7 @@ public class CountdownTimer : MonoBehaviour {
 	}
 
 	void OnGUI(){
+		//Display the time
 		if (timeLeft >= 0) {
 			string minutes = Mathf.Floor (timeLeft / 60).ToString ("00");
 			string seconds = Mathf.Floor (timeLeft % 60).ToString ("00");
