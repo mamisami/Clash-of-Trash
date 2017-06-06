@@ -11,7 +11,30 @@ public class MusicManager : MonoBehaviour {
 	static AudioSource audioSource;
 
 	public static MusicManager instance;
-	private static string music = "";
+	private static string playedMusic = "";
+
+
+	/// <summary>
+	/// Changes the music.
+	/// </summary>
+	/// <param name="musicResource">Music resource.</param>
+	public static void changeMusic(string musicResource) {
+		playedMusic = musicResource;
+		audioSource.Stop();
+		audioSource.pitch = 1.0f; 	// Default pitch
+		audioSource.volume = 1.0f;	// Default volume
+		audioSource.clip = Resources.Load<AudioClip> (musicResource);
+		audioSource.Play();
+	}
+
+	/// <summary>
+	/// Speeds up the music.
+	/// </summary>
+	/// <param name="acceleration">Acceleration.</param>
+	public static void SpeedUp(float acceleration) {
+		audioSource.pitch += acceleration;
+	}
+
 
 	void Awake() {
 		if (instance == null) {
@@ -27,32 +50,22 @@ public class MusicManager : MonoBehaviour {
 		// Note: previousScene is always empty because of the singleton structure.
 		audioSource = GetComponent<AudioSource>();
 
+		string newMusic = "";
 		if (newScene.name == "StartScene") {
 			switch (Global.level) {
 			case 1:
-				music = "Music/Music1";
+				newMusic = "Music/Level1";
 				break;
 			case 2:
-				music = "Music/Music2";
+				newMusic = "Music/Level2";
 				break;
 			}
-			changeMusic();
+			changeMusic(newMusic);
 
-		} else if (newScene.name == "Menu" && music != "Music/MenuMusic") {
-			music = "Music/MenuMusic";
-			changeMusic();
+		} else if (newScene.name == "Menu" && playedMusic != "Music/Menu") {
+			newMusic = "Music/Menu";
+			changeMusic(newMusic);
 		}
-	}
-	static void changeMusic(){
-		audioSource.Stop();
-		audioSource.pitch = 1.0f; 	// Default pitch
-		audioSource.volume = 1.0f;	// Default volume
-		audioSource.clip = Resources.Load<AudioClip> (music);
-		audioSource.Play();
-	}
-
-	public static void SpeedUp(float acceleration){
-		audioSource.pitch += acceleration;
 	}
 }
 	

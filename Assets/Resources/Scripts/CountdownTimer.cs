@@ -158,6 +158,9 @@ public class CountdownTimer : MonoBehaviour {
 		if (btnQuit)
 			Destroy (btnQuit);
 
+		// Play the end music
+		MusicManager.changeMusic ("Music/EndLevel");
+
 		//Show the finish menu
 		Vector3 pos = finishMenu.transform.position;
 		finishMenu.SetActive (true);
