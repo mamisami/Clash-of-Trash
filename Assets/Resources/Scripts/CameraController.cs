@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour {
 		}
 
 		// Set listener quit button
-		Button btn = GameObject.Find("CanvasInfos/BtnQuit").GetComponent<Button>();
+		Button btn = GameObject.Find("CanvasTimeScore/BtnQuit").GetComponent<Button>();
 		btn.onClick.AddListener(ShowQuitPanel);
 
 		// Set listener continue button
