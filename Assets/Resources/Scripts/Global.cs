@@ -10,7 +10,7 @@ public static class Global
 	public static int level = 1;
 
 	//Global constants (most of the tunning is to be done here)
-	public const float GAME_TIME = 90.0f;
+	public const float GAME_TIME = 62.0f;
 
 	public const float SPAWN_TIME_MIN = 0.0f;
 	public const float SPAWN_TIME_MAX = 15.0f;
